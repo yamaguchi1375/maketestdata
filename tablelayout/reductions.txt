@@ -1,0 +1,6 @@
+減免情報 (reductions)
+ユーザID (user_id) VARCHAR(128)
+一人親フラグ (single_parent_flag) VARCHAR(1)
+非課税フラグ (tax_exempt_flag) VARCHAR(1)
+開始日付 (start_date) DATE
+終了日付 (end_date) DATE
