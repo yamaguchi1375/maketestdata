@@ -91,10 +91,10 @@ function main() {
         return __generator(this, function (_a) {
             try {
                 csvToJson = require('convert-csv-to-json');
-                json = csvToJson.fieldDelimiter(',').formatValueByType().getJsonFromCsv("/Users/yamaguchitakeshi/slk/demo作業/example/users.csv");
+                json = csvToJson.fieldDelimiter(',').formatValueByType().getJsonFromCsv("/Users/yamaguchitakeshi/slk/demo作業/example/children_detail.csv");
                 for (i = 0; i < json.length; i++) {
                     // console.log(json[i]);
-                    jsonToSource_1.JsonToSource.makeInterfaceSourc('users', json[i]);
+                    jsonToSource_1.JsonToSource.makeInterfaceSourc('children_detail', json[i]);
                 }
             }
             catch (err) {

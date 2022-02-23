@@ -27,7 +27,7 @@ var DateUtil = /** @class */ (function () {
     };
     ;
     DateUtil.getRandomChoiceTime = function () {
-        return DateUtil.getRandomTime(10, 17);
+        return DateUtil.getRandomTime(10, 17) + ":00:00";
     };
     ;
     return DateUtil;

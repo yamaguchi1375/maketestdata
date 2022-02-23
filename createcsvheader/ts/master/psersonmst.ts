@@ -13,15 +13,19 @@ const Relationship = {
     MUSUME: `娘`
 };
 
-const Sex = {
-    MALE: `男`,
-    WOMAN: `女`
+const Gender = {
+    MALE: "男",
+    WOMAN: "女"
+}
+
+function GenderValue(strValue: string): number {
+    return strValue == Gender.MALE ? 1 : 2;
 }
 
 const PersonCsvMapping = {
     name: `名前`,
     kana: `ふりがな`,
-    sex: `性別`,
+    gender: `性別`,
     age: `年齢`,
     birthday: `誕生日`,
     bloodType: `血液型`,
@@ -42,7 +46,7 @@ const convertPersonMst: Converter<Person> = (record, index) => {
         firstKana: record[PersonCsvMapping.kana].replace(/[ぁ-ん]/g, function(s) {
             return String.fromCharCode(s.charCodeAt(0) + 0x60);
          }).split(` `)[1],
-        sex: record[PersonCsvMapping.sex],
+        gender: GenderValue(record[PersonCsvMapping.gender]),
         age: record[PersonCsvMapping.age],
         birthday: record[PersonCsvMapping.birthday],
         bloodType: record[PersonCsvMapping.bloodType],
@@ -78,12 +82,12 @@ export class PersonMaster {
             firstName: family.firstName,
             lastKana: base.lastKana,
             firstKana: family.firstKana,
-            sex: family.sex,
+            gender: family.gender,
             age: family.age,
             birthday: family.birthday,
             bloodType: family.bloodType,
             cellPhoneNumber: family.cellPhoneNumber,
-            relationship: family.sex == Sex.MALE ? Relationship.CHICHI : Relationship.HAHA,
+            relationship: family.gender == GenderValue(Gender.MALE) ? Relationship.CHICHI : Relationship.HAHA,
             index: family.index
         };
     }
@@ -96,12 +100,12 @@ export class PersonMaster {
             firstName: family.firstName,
             lastKana: base.lastKana,
             firstKana: family.firstKana,
-            sex: family.sex,
+            gender: family.gender,
             age: family.age,
             birthday: family.birthday,
             bloodType: family.bloodType,
             cellPhoneNumber: family.cellPhoneNumber,
-            relationship: family.sex == Sex.MALE ? Relationship.SOHU : Relationship.SOBO,
+            relationship: family.gender == GenderValue(Gender.MALE) ? Relationship.SOHU : Relationship.SOBO,
             index: family.index
         };
     }
@@ -114,12 +118,12 @@ export class PersonMaster {
             firstName: family.firstName,
             lastKana: base.lastKana,
             firstKana: family.firstKana,
-            sex: family.sex,
+            gender: family.gender,
             age: family.age,
             birthday: family.birthday,
             bloodType: family.bloodType,
             cellPhoneNumber: family.cellPhoneNumber,
-            relationship: family.sex == Sex.MALE ? Relationship.MUSUKO : Relationship.MUSUME,
+            relationship: family.gender == GenderValue(Gender.MALE) ? Relationship.MUSUKO : Relationship.MUSUME,
             index: family.index
         };
     }
@@ -132,7 +136,7 @@ export class PersonMaster {
             firstName: family.firstName,
             lastKana: base.lastKana,
             firstKana: family.firstKana,
-            sex: family.sex,
+            gender: family.gender,
             age: base.age,
             birthday: base.birthday,
             bloodType: family.bloodType,

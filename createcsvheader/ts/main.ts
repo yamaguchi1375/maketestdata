@@ -119,10 +119,10 @@ async function main() {
 
   let csvToJson = require('convert-csv-to-json');
 
-  let json = csvToJson.fieldDelimiter(',').formatValueByType().getJsonFromCsv("/Users/yamaguchitakeshi/slk/demo作業/example/users.csv");
+  let json = csvToJson.fieldDelimiter(',').formatValueByType().getJsonFromCsv("/Users/yamaguchitakeshi/slk/demo作業/example/children_detail.csv");
   for(let i=0; i<json.length;i++){
     // console.log(json[i]);
-    JsonToSource.makeInterfaceSourc('users', json[i]);
+    JsonToSource.makeInterfaceSourc('children_detail', json[i]);
   }
 
   } catch (err) {

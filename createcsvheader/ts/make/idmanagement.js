@@ -24,12 +24,11 @@ var MailAdressMaker = /** @class */ (function () {
 }());
 exports.MailAdressMaker = MailAdressMaker;
 var ChildIdMaker = /** @class */ (function () {
-    function ChildIdMaker(prefix, startIndex) {
-        this.prefix = prefix;
+    function ChildIdMaker(startIndex) {
         this.startIndex = startIndex;
     }
     ChildIdMaker.prototype.createNewId = function () {
-        return this.prefix + new String(this.startIndex++);
+        return this.startIndex++;
     };
     ;
     return ChildIdMaker;

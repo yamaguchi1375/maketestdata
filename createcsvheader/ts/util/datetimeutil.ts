@@ -25,8 +25,8 @@ export class DateUtil {
     static getRandomChoiceDate(birthday: string) {
         return DateUtil.getRandomYmd(birthday,'2022/02/15');
     };
-    static getRandomChoiceTime() {
-        return DateUtil.getRandomTime(10, 17);
+    static getRandomChoiceTime(): string {
+        return DateUtil.getRandomTime(10, 17) + `:00:00`;
     };
 }
 

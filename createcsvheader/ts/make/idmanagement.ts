@@ -20,14 +20,12 @@ export class MailAdressMaker {
 }
 
 export class ChildIdMaker {
-    prefix: string;
     startIndex: number;
-    constructor(prefix: string, startIndex: number) {
-        this.prefix = prefix;
+    constructor(startIndex: number) {
         this.startIndex = startIndex;
     }
-    createNewId(): string {
-        return this.prefix + new String(this.startIndex++);
+    createNewId(): number {
+        return this.startIndex++;
     };
 }
 
