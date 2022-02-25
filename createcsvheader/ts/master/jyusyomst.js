@@ -82,7 +82,7 @@ var JyusyoMaster = /** @class */ (function () {
     JyusyoMaster.prototype.getRandomJyusyo = function () {
         // return this.jyusyos[Math.floor(Math.random() * (this.jyusyos.length - 1))];
         return {
-            yubin7: "2310005",
+            yubin7: "231-0005",
             jyusyo: "\u795E\u5948\u5DDD\u770C\u6A2A\u6D5C\u5E02\u4E2D\u533A\u672C\u753A",
             jyusyo2: "\uFF16\u4E01\u76EE\uFF15\uFF10\u2212\uFF11\uFF10",
             index: 1

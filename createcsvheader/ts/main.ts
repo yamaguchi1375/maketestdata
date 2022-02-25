@@ -3,31 +3,36 @@ import * as fs from 'fs';
 import * as readline from 'readline'
 import { JyusyoMaster } from './master/jyusyomst';
 import { PersonMaster } from './master/psersonmst';
-import { UserIdMaker, ChildIdMaker, InterviewNoMaker, MailAdressMaker } from './make/idmanagement';
+import { UserIdMaker, InterviewNoMaker, MailAdressMaker } from './make/idmanagement';
 import { FamilyPattern} from './make/familymaker'
 import { FamillesMaker, FamillesMakerParam, FamilyMakerType } from './make/familiesmaker';
 import { Children, Family, Interviews, Users } from './dto/dtos';
 import { JsonToSource } from './util/jsonToSource';
+import { ChildrenDetailEntity, ChildrenEntity, Entity, EntityConverter, InterviewsEntity, UsersEntity } from './dto/entity';
+import { DateUtil } from './util/datetimeutil';
 
 // マスタ読み込みパス
-const JYUSYO_PATH = `/Users/yamaguchitakeshi/slk/demo作業/master/yubin_hama.csv`;
-const OTONA_PATH = `/Users/yamaguchitakeshi/slk/demo作業/master/otona.csv`;
-const KODOMO_PATH = `/Users/yamaguchitakeshi/slk/demo作業/master/kodomo.csv`;
+const JYUSYO_PATH = `/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/yubin_hama.csv`;
+const OTONA_PATH = `/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/otona.csv`;
+const KODOMO_PATH = `/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/kodomo.csv`;
 
 // PARAM
 const PARAM_MAIL_PREFIX = `slk.ty.yamaguchi`;
 const PARAM_MAIL_SUFFIX = `gmail.com`;
-const PARAM_MAIL_STARTINDEX = 101;
+const PARAM_MAIL_STARTINDEX = 103;
 const PARAM_CHILDREN_ID_PREFIX = `shibata`;
 const PARAM_CHILDREN_ID_START_INDEX = 1;
+
 const PARAM_INTERVIEW_NO_START_INDEX = 1;
 
 // facilityId
-const PARAM_FACILITY_ID = 'a0005';
+// const PARAM_FACILITY_ID = 'a0005';
+const PARAM_FACILITY_ID = 'a00021';
 
 // staging facilityId
 const STAGING_FACILITY_ID = 'a10033';
 const STAGING_FACILITY_USER_ID = 'afb530ae-a1e7-477c-aab5-9a779603e2d6';
+const DATE_CRAETE_PRC_DATE = '2022-02-22 10:07:31.996';
 
 main();
 
@@ -48,23 +53,7 @@ async function main() {
     // );
     // const family = familyMaker.make();
 
-    /* ここから作成ロジック */
-    // const jyusyoMaster = new JyusyoMaster();
-    // await jyusyoMaster.setup(JYUSYO_PATH);
-    // const personMaster = new PersonMaster();
-    // await personMaster.setup(OTONA_PATH, KODOMO_PATH);
-    // const userIdMaker = new UserIdMaker();
-    // const mailAdressMaker = new MailAdressMaker(PARAM_MAIL_PREFIX
-    //   , PARAM_MAIL_SUFFIX
-    //   , PARAM_MAIL_STARTINDEX);
-    // const childrenIdMaker = new ChildIdMaker(
-    //   PARAM_CHILDREN_ID_PREFIX,
-    //   PARAM_CHILDREN_ID_START_INDEX
-    // );
-
-    // const interviewNoMaker = new InterviewNoMaker(PARAM_INTERVIEW_NO_START_INDEX);
-
-    // const params = new FamillesMakerParam(PARAM_FACILITY_ID);
+    // main
     // params.pushPettern(new FamilyMakerType(FamilyPattern.Children1, 10));
     // params.pushPettern(new FamilyMakerType(FamilyPattern.Children2, 6));
     // params.pushPettern(new FamilyMakerType(FamilyPattern.Children3, 4));
@@ -73,27 +62,46 @@ async function main() {
     // params.pushPettern(new FamilyMakerType(FamilyPattern.Mitsugo3, 1));
     // params.pushPettern(new FamilyMakerType(FamilyPattern.Mitsugo4, 1));
 
-    // const famillesMaker = new FamillesMaker(
-    //   jyusyoMaster,
-    //   personMaster,
-    //   userIdMaker,
-    //   childrenIdMaker,
-    //   interviewNoMaker,
-    //   mailAdressMaker
-    // );
+    /* ここから作成ロジック */
+    const jyusyoMaster = new JyusyoMaster();
+    await jyusyoMaster.setup(JYUSYO_PATH);
+    const personMaster = new PersonMaster();
+    await personMaster.setup(OTONA_PATH, KODOMO_PATH);
+    const userIdMaker = new UserIdMaker();
+    const mailAdressMaker = new MailAdressMaker(PARAM_MAIL_PREFIX
+      , PARAM_MAIL_SUFFIX
+      , PARAM_MAIL_STARTINDEX);
 
-    // const familles = famillesMaker.make(params);
+    const interviewNoMaker = new InterviewNoMaker(PARAM_INTERVIEW_NO_START_INDEX);
 
-    // const users = convertUsers(familles);
-    // const children = convertChildren(familles);
-    // const interviews = convertInterviews(familles);
+    const params = new FamillesMakerParam(PARAM_FACILITY_ID);
+    // test
+    // params.pushPettern(new FamilyMakerType(FamilyPattern.Children1, 1));
+    params.pushPettern(new FamilyMakerType(FamilyPattern.Children2, 1));
+    // params.pushPettern(new FamilyMakerType(FamilyPattern.Futago3, 1));
+    // params.pushPettern(new FamilyMakerType(FamilyPattern.Mitsugo4, 1));
 
-    // const ObjectsToCsv = require('objects-to-csv');
+    const famillesMaker = new FamillesMaker(
+      jyusyoMaster,
+      personMaster,
+      userIdMaker,
+      interviewNoMaker,
+      mailAdressMaker
+    );
+
+    const familles = famillesMaker.make(params);
+
+    const users = convertUsers(familles);
+    const children = convertChildren(familles);
+    const childrendetails = convertChildrenDetail(familles);
+    const interviews = convertInterviews(familles);
+
+    const ObjectsToCsv = require('objects-to-csv');
 
     // (async () => {
     //   const csv = new ObjectsToCsv(users);    
     //   // Save to file:
-    //   await csv.toDisk('/Users/yamaguchitakeshi/slk/demo作業/exportcsv/users.csv');
+    //   await csv.toDisk('/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportcsv/users.csv');
     //   // Return the CSV file as string:
     //   console.log(await csv.toString());
     // })();
@@ -101,7 +109,15 @@ async function main() {
     // (async () => {
     //   const csv = new ObjectsToCsv(children);    
     //   // Save to file:
-    //   await csv.toDisk('/Users/yamaguchitakeshi/slk/demo作業/exportcsv/children.csv');
+    //   await csv.toDisk('/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportcsv/children.csv');
+    //   // Return the CSV file as string:
+    //   console.log(await csv.toString());
+    // })();
+
+    // (async () => {
+    //   const csv = new ObjectsToCsv(childrendetails);    
+    //   // Save to file:
+    //   await csv.toDisk('/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportcsv/childrendetails.csv');
     //   // Return the CSV file as string:
     //   console.log(await csv.toString());
     // })();
@@ -109,23 +125,28 @@ async function main() {
     // (async () => {
     //   const csv = new ObjectsToCsv(interviews);    
     //   // Save to file:
-    //   await csv.toDisk('/Users/yamaguchitakeshi/slk/demo作業/exportcsv/interviews.csv');
+    //   await csv.toDisk('/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportcsv/interviews.csv');
     //   // Return the CSV file as string:
     //   console.log(await csv.toString());
     // })();
 
+    exportSqlInterviews(`users`, users);
+    exportSqlInterviews(`children`, children);
+    exportSqlInterviews(`children_detail`, childrendetails);
+    exportSqlInterviews(`interviews`, interviews);
+
   // const { v4: uuidv4 } = require('uuid');
   // console.log(uuidv4());
 
-  let csvToJson = require('convert-csv-to-json');
+  // let csvToJson = require('convert-csv-to-json');
+  // let json = csvToJson.fieldDelimiter(',').formatValueByType().getJsonFromCsv("/Users/yamaguchitakeshi/slk/gitwork/maketestdata/example/children_detail.csv");
+  // for(let i=0; i<json.length;i++){
+  //   console.log(json[i]);
+  //   jsonToBasicObj(json[i]);
+  //   // JsonToSource.makeInterfaceSourc('children_detail', json[i]);
+  // }
 
-  let json = csvToJson.fieldDelimiter(',').formatValueByType().getJsonFromCsv("/Users/yamaguchitakeshi/slk/demo作業/example/children_detail.csv");
-  for(let i=0; i<json.length;i++){
-    // console.log(json[i]);
-    JsonToSource.makeInterfaceSourc('children_detail', json[i]);
-  }
-
-  } catch (err) {
+} catch (err) {
     console.log(err);
   }
 
@@ -154,10 +175,31 @@ export class Table {
   }
 }
 
+function jsonToBasicObj(json: any) {
+  const map:any = {};
+  Object.keys(json)
+  .map(key => {
+    const columnName = snakeCaseToCamelCase(key);
+    map[columnName] = json[key];
+  });
+  console.log(map);
+}
+
+function makeSrc(interviews: Interviews) {
+  console.log(`static convertInterviewsEntity(interviews: Interviews): InterviewsEntity {`);
+  console.log(`    return {`);
+  Object.keys(interviews)
+  .map(key => {
+    console.log(`        ` + key + `: interviews.` + key + `,`)
+  });
+  console.log(`    };`);
+  console.log(`};`);
+}
+
 async function makeTable(): Promise<Table> {
   return new Promise((resolve, reject) => {
     // 読み込みストリーム
-    let stream = fs.createReadStream(`/Users/yamaguchitakeshi/slk/demo作業/tablelayout/users.txt`);
+    let stream = fs.createReadStream(`/Users/yamaguchitakeshi/slk/gitwork/maketestdata/tablelayout/users.txt`);
     var reader = readline.createInterface({ input: stream });
     var tblData: TblData = {tblName:``, caption:``};
     var columnlist: ColumnData[] = [];
@@ -262,28 +304,75 @@ function consoleTypeSrcOut(table: Table) {
   console.log(`};`);
 }
 
-function convertUsers(familles: Array<Family>): Array<Users> {
-  const result = new Array<Users>();
+function convertUsers(familles: Array<Family>): Array<UsersEntity> {
+  const result = new Array<UsersEntity>();
   familles
-  .map(family => family.user)
+  .map(family => EntityConverter.convertUsersEntity(family.user))
   .forEach(user => result.push(user));
   return result;
 }
 
-function convertChildren(familles: Array<Family>): Array<Children> {
-  const result = new Array<Children>();
+function convertChildren(familles: Array<Family>): Array<ChildrenEntity> {
+  const result = new Array<ChildrenEntity>();
   familles
-  .map(family => family.childrens)
+  .map(family => EntityConverter.convertChildrenEntites(family.childrens))
   .forEach(childrens => result.splice(result.length, 0, ...childrens));
   return result;
 }
 
-function convertInterviews(familles: Array<Family>): Array<Interviews> {
-  const result = new Array<Interviews>();
+function convertChildrenDetail(familles: Array<Family>): Array<ChildrenDetailEntity> {
+  const result = new Array<ChildrenDetailEntity>();
   familles
-  .map(family => family.interviews)
+  .map(family => family.childrendetails)
+  .forEach(childrens => result.splice(result.length, 0, ...childrens));
+  return result;
+}
+function convertInterviews(familles: Array<Family>): Array<InterviewsEntity> {
+  const result = new Array<InterviewsEntity>();
+  familles
+  .map(family => EntityConverter.convertInterviewsEntites(family.interviews))
   .forEach(interviews => result.splice(result.length, 0, ...interviews));
   return result;
 }
 
+function camelToUnderscore(key: string) {
+  var result = key.replace( /([A-Z])/g, " $1" );
+  return result.split(' ').join('_').toLowerCase();
+}
 
+function exportSqlInterviews(tablename: string, records: Array<Entity>) {
+  records.forEach(record => {
+    console.log(``);
+    let index = 0;
+    let sqlcol = 'INSERT INTO `' + tablename + '` (';
+    Object.keys(record)
+    .forEach(key => {
+      index += 1;
+      if (tablename == 'interviews' && index == 1) {
+        return;
+      }
+      sqlcol += '`' + camelToUnderscore(key) + '` ,'  
+    });
+    sqlcol = sqlcol.slice(0, -1);
+    sqlcol += ' ) VALUES ';
+    console.log(sqlcol);
+    let sqlValue = '(';
+    index = 0;
+    Object.values(record)
+    .forEach(value => {
+      index += 1;
+      if (tablename == 'interviews' && index == 1) {
+        return;
+      }
+      if (`NULL` == value) {
+        sqlValue += value;
+      } else {
+        sqlValue += `'` + value + `'`
+      }
+      sqlValue += ' ,';
+    });
+    sqlValue = sqlValue.slice(0, -1);
+    sqlValue += ');'
+    console.log(sqlValue);
+  });
+}

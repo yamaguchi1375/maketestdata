@@ -19,16 +19,6 @@ export class MailAdressMaker {
     }
 }
 
-export class ChildIdMaker {
-    startIndex: number;
-    constructor(startIndex: number) {
-        this.startIndex = startIndex;
-    }
-    createNewId(): number {
-        return this.startIndex++;
-    };
-}
-
 export class InterviewNoMaker {
     startIndex: number;
     constructor(startIndex: number) {

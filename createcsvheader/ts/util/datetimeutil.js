@@ -19,7 +19,7 @@ var DateUtil = /** @class */ (function () {
     ;
     DateUtil.getRandomTime = function (starthour, endhour) {
         var timenum = Math.floor(Math.random() * (endhour + 1 - starthour)) + starthour;
-        return timenum * 100;
+        return timenum;
     };
     ;
     DateUtil.getRandomChoiceDate = function (birthday) {
@@ -28,6 +28,12 @@ var DateUtil = /** @class */ (function () {
     ;
     DateUtil.getRandomChoiceTime = function () {
         return DateUtil.getRandomTime(10, 17) + ":00:00";
+    };
+    ;
+    DateUtil.getEndReservDatetime = function (startTime) {
+        var s = parseInt(startTime.split(':')[0]);
+        s += 1;
+        return new String(s) + ":00:00";
     };
     ;
     return DateUtil;

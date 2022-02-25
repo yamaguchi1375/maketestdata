@@ -1,3 +1,5 @@
+import { ChildrenDetailEntity, ChildrenEntity, InterviewsEntity, UsersEntity } from "./entity";
+
 export interface Jyusyo {
     yubin7: string;
     jyusyo: string;
@@ -21,183 +23,13 @@ export interface Person {
     index: number;
 };
 
-export interface ChildrenDetail {
-  childId: number;
-  userId: string;
-  facilityId: string;
-  facilityChildNumber: string;
-  regularUseFlag: number;
-  singleUseFlag: number;
-  limitOverApprovalFlag: number;
-  birthHeight: string;
-  birthWeight: string;
-  normalTemperature: string;
-  medicalHistoryContent: string;
-  healthPhysicalDevelopmentConcerns: string;
-  familyHospital: string;
-  familyHospitalTel: string;
-  bedTime: string;
-  wakeupTime: string;
-  napTime: number;
-  napStartTime: string;
-  napEndTime: string;
-  putToSleep: number;
-  fallAsleep: number;
-  excretion: number;
-  leaveChildFlag: number;
-  leaveChildTo: number;
-  note: string;
-  createUser: string;
-  createDatetime: string;
-  updateUser: string;
-  updateDatetime: string;
-};
-
-export interface Children {
+export interface Children extends ChildrenEntity {
     person: Person;
-    childId: number;
-    userId: string;
-    name: string;
-    kana: string;
-    birthday: string;
-    registAge: string;
-    gender: number;
-    bloodType: string;
-    allergyFlag: number;
-    allergyCauses1: string;
-    allergySymptoms1: string;
-    allergyTreatments1: string;
-    allergyConcerns1: string;
-    allergyCauses2: string;
-    allergySymptoms2: string;
-    allergyTreatments2: string;
-    allergyConcerns2: string;
-    allergyCauses3: string;
-    allergySymptoms3: string;
-    allergyTreatments3: string;
-    allergyConcerns3: string;
-    brothersSistersFlag: number;
-    multipleBirthsFlag: number;
-    disabilities: number;
-    childcareBusinessUserFlag: number;
-    noChildcareProvidedFlag: number;
-    limitApprovalFlag: number;
-    deleteFlag: number;
-    createUser: string;
-    createDatetime: string;
-    updateUser: string;
-    updateDatetime: string;
-  };
+};
   
-export interface Interviews {
+export interface Interviews extends InterviewsEntity {
     title: string;
-    interviewNo: number;
-    facilityId: string;
-    firstChoiceDate: string;
-    firstChoiceTimeFrom: string;
-    firstChoiceTimeTo: string;
-    secondChoiceDate: string;
-    secondChoiceTimeFrom: string;
-    secondChoiceTimeTo: string;
-    thirdChoiceDate: string;
-    thirdChoiceTimeFrom: string;
-    thirdChoiceTimeTo: string;
-    reservationFixDate: string;
-    reservationFixTimeFrom: string;
-    reservationFixTimeTo: string;
-    reservationMethod: number;
-    reservationDatetime: string;
-    status: number;
-    parentName: string;
-    parentKana: string;
-    postalCode: string;
-    address1: string;
-    address2: string;
-    buildingNameRoomNumber: string;
-    tel: string;
-    email: string;
-    relationship: string;
-    emergencyContactName1: string;
-    emergencyContactKana1: string;
-    emergencyContactRelationship1: string;
-    emergencyContactCompany1: string;
-    emergencyContactTel1: string;
-    emergencyContactEmail1: string;
-    emergencyContactName2: string;
-    emergencyContactKana2: string;
-    emergencyContactRelationship2: string;
-    emergencyContactCompany2: string;
-    emergencyContactTel2: string;
-    emergencyContactEmail2: string;
-    emergencyContactName3: string;
-    emergencyContactKana3: string;
-    emergencyContactRelationship3: string;
-    emergencyContactCompany3: string;
-    emergencyContactTel3: string;
-    emergencyContactEmail3: string;
-    welfareHouseholdFlag: number;
-    taxExemptHouseholdFlag: number;
-    singleParentHouseholdFlag: number;
-    multipleBirthsHouseholdFlag: number;
-    limitApprovalFlag: number;
-    childcareBusinessUserFlag: number;
-    noChildcareProvidedFlag: number;
-    limitOverApprovalFlag: number;
-    regularUseFlag: number;
-    singleUseFlag: number;
-    childName: string;
-    childKana: string;
-    childBirth: string;
-    registAge: string;
-    childGender: number;
-    bloodType: string;
-    childMedicalHistoryFlag: number;
-    childAllergyFlag: number;
-    citizenChildAllergy: string;
-    allergyCauses1: string;
-    allergySymptoms1: string;
-    allergyTreatments1: string;
-    allergyConcerns1: string;
-    allergyCauses2: string;
-    allergySymptoms2: string;
-    allergyTreatments2: string;
-    allergyConcerns2: string;
-    allergyCauses3: string;
-    allergySymptoms3: string;
-    allergyTreatments3: string;
-    allergyConcerns3: string;
-    brothersSistersFlag: number;
-    multipleBirthsFlag: number;
-    disabilities: number;
-    note: string;
-    interviewDate: string;
-    permitFlag: number;
-    reason: string;
-    facilityNumber: string;
-    birthHeight: string;
-    birthWeight: string;
-    normalTemperature: string;
-    medicalHistoryContent: string;
-    healthPhysicalDevelopmentConcerns: string;
-    familyHospital: string;
-    familyHospitalTel: string;
-    bedTime: string;
-    wakeupTime: string;
-    napTime: number;
-    napStartTime: string;
-    napEndTime: string;
-    putToSleep: number;
-    fallAsleep: number;
-    excretion: number;
-    leaveChildFlag: number;
-    leaveChildTo: number;
-    userId: string;
-    childId: number;
-    createUser: string;
-    createDatetime: string;
-    updateUser: string;
-    updateDatetime: string;
-  };
+};
     
 export interface Reductions {
     userId: string;
@@ -207,49 +39,19 @@ export interface Reductions {
     endDate: string;
 };
 
-export interface Users {
+export interface Users extends UsersEntity {
     person: Person;
-    userId: string;
-    name: string;
-    kana: string;
-    tel: string;
-    email: string;
-    postalCode: string;
-    address1: string;
-    address2: string;
-    buildingNameRoomNumber: string;
-    relationship: string;
-    emergencyContactName1: string;
-    emergencyContactKana1: string;
-    emergencyContactRelationship1: string;
-    emergencyContactCompany1: string;
-    emergencyContactTel1: string;
-    emergencyContactEmail1: string;
-    emergencyContactName2: string;
-    emergencyContactKana2: string;
-    emergencyContactRelationship2: string;
-    emergencyContactCompany2: string;
-    emergencyContactTel2: string;
-    emergencyContactEmail2: string;
-    emergencyContactName3: string;
-    emergencyContactKana3: string;
-    emergencyContactRelationship3: string;
-    emergencyContactCompany3: string;
-    emergencyContactTel3: string;
-    emergencyContactEmail3: string;
-    welfareHouseholdFlag: number;
-    taxExemptHouseholdFlag: number;
-    singleParentHouseholdFlag: number;
-    multipleBirthsHouseholdFlag: number;
-    deleteFlag: number;
-    createUser: string;
-    createDatetime: string;
-    updateUser: string;
-    updateDatetime: string;
-};
-  
+  };
+    
 export interface Family {
     user: Users;
     childrens: Array<Children>;
+    childrendetails: Array<ChildrenDetailEntity>;
     interviews: Array<Interviews>;
 };
+
+export interface CalendarMst {
+    month: number,
+    date: string,
+    holiday: number
+}

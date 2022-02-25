@@ -2,7 +2,7 @@ import { Children, Family, Interviews, Users } from "../dto/dtos";
 import { JyusyoMaster } from "../master/jyusyomst";
 import { PersonMaster } from "../master/psersonmst";
 import { FamilyMaker, FamilyPattern } from "./familymaker";
-import { ChildIdMaker, InterviewNoMaker, MailAdressMaker, UserIdMaker } from "./idmanagement";
+import { InterviewNoMaker, MailAdressMaker, UserIdMaker } from "./idmanagement";
 
 export class FamilyMakerType {
     pettern: FamilyPattern;
@@ -29,19 +29,16 @@ export class FamillesMaker {
     jyusyoMaster: JyusyoMaster;
     presonMaster: PersonMaster;
     userIdMaker: UserIdMaker;
-    childIdMaker: ChildIdMaker;
     interviewNoMaker: InterviewNoMaker;
     mailAdressMaker: MailAdressMaker; 
     users: Array<Users>;
     childrens: Array<Children>;
     interviews: Array<Interviews>;
     constructor(jyusyoMaster: JyusyoMaster, personMaster: PersonMaster
-        , userIdMaker: UserIdMaker, childIdMaker: ChildIdMaker
-        , interviewNoMaker: InterviewNoMaker,mailAdressMaker : MailAdressMaker) {
+        , userIdMaker: UserIdMaker, interviewNoMaker: InterviewNoMaker,mailAdressMaker : MailAdressMaker) {
         this.jyusyoMaster = jyusyoMaster;
         this.presonMaster = personMaster;
         this.userIdMaker = userIdMaker;
-        this.childIdMaker = childIdMaker;
         this.interviewNoMaker = interviewNoMaker;
         this.mailAdressMaker = mailAdressMaker;
         this.users = [];
@@ -58,7 +55,6 @@ export class FamillesMaker {
                     makerType.pettern,
                     this.userIdMaker.createNewId(),
                     params.facilityId,
-                    this.childIdMaker,
                     this.interviewNoMaker,
                     this.mailAdressMaker.createNewId(),
                     this.jyusyoMaster,

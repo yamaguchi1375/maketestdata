@@ -49,8 +49,8 @@ const convertPersonMst: Converter<Person> = (record, index) => {
         gender: GenderValue(record[PersonCsvMapping.gender]),
         age: record[PersonCsvMapping.age],
         birthday: record[PersonCsvMapping.birthday],
-        bloodType: record[PersonCsvMapping.bloodType],
-        cellPhoneNumber: record[PersonCsvMapping.cellPhoneNumber],
+        bloodType: record[PersonCsvMapping.bloodType].replace('型', ''),
+        cellPhoneNumber: `080-3469-0696`,
         relationship: Relationship.HONNIN,
         index: index
     };

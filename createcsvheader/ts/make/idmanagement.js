@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.InterviewNoMaker = exports.ChildIdMaker = exports.MailAdressMaker = exports.UserIdMaker = void 0;
+exports.InterviewNoMaker = exports.MailAdressMaker = exports.UserIdMaker = void 0;
 var UserIdMaker = /** @class */ (function () {
     function UserIdMaker() {
     }
@@ -23,17 +23,6 @@ var MailAdressMaker = /** @class */ (function () {
     return MailAdressMaker;
 }());
 exports.MailAdressMaker = MailAdressMaker;
-var ChildIdMaker = /** @class */ (function () {
-    function ChildIdMaker(startIndex) {
-        this.startIndex = startIndex;
-    }
-    ChildIdMaker.prototype.createNewId = function () {
-        return this.startIndex++;
-    };
-    ;
-    return ChildIdMaker;
-}());
-exports.ChildIdMaker = ChildIdMaker;
 var InterviewNoMaker = /** @class */ (function () {
     function InterviewNoMaker(startIndex) {
         this.startIndex = startIndex;
