@@ -35,67 +35,65 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.JsonToSource = void 0;
-var JsonToSource = /** @class */ (function () {
-    function JsonToSource() {
-    }
-    JsonToSource.makeInterfaceSourc = function (tableName, json) {
-        console.log("export interface " + snakeCaseToClassName(tableName) + " {");
-        for (var _i = 0, _a = Object.entries(json); _i < _a.length; _i++) {
-            var _b = _a[_i], key = _b[0], value = _b[1];
-            console.log("  " + snakeCaseToCamelCase(key) + ": " + typestr(value) + ";");
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
         }
-        console.log("};");
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.UseReservationMaster = void 0;
+var filesIO_1 = require("../utils/filesIO");
+var converter = function (record, index) {
+    return {
+        reservation_no: parseInt(record['reservation_no']),
+        facility_id: record['facility_id'],
+        user_id: record['user_id'],
+        child_id: parseInt(record['child_id']),
+        usage_date: record['usage_date'],
+        use_from_datetime: record['use_from_datetime'],
+        use_to_datetime: record['use_to_datetime'],
+        way_to_reserve: parseInt(record['way_to_reserve']),
+        accept_date: record['accept_date'],
+        status: parseInt(record['status']),
+        achieve_flag: parseInt(record['achieve_flag']),
+        amount: record['amount'],
+        citizen_note: record['citizen_note'],
+        facility_note: record['facility_note'],
+        cancel_reason_category: parseInt(record['cancel_reason_category']),
+        cancel_note: record['cancel_note'],
+        use_reason_category: parseInt(record['use_reason_category']),
+        create_user: record['create_user'],
+        create_datetime: record['create_datetime'],
+        update_user: record['update_user'],
+        update_datetime: record['update_datetime']
     };
-    JsonToSource.convertJsonToObject = function (path, obj) {
+};
+var UseReservationMaster = /** @class */ (function () {
+    function UseReservationMaster() {
+        this.usereservations = new Array();
+    }
+    UseReservationMaster.prototype.setup = function (path) {
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve, reject) {
-                        var csvToJson = require('convert-csv-to-json');
-                        var json = csvToJson.x(',').formatValueByType().getJsonFromCsv(path);
-                        json.forEach(function (row) {
-                            row['aaa'] = 'bbb';
-                        });
-                    })];
+            var result;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, (0, filesIO_1.readCsv)(path, converter)];
+                    case 1:
+                        result = _b.sent();
+                        (_a = this.usereservations).splice.apply(_a, __spreadArray([this.usereservations.length, 0], result, false));
+                        return [2 /*return*/];
+                }
             });
         });
     };
-    return JsonToSource;
+    UseReservationMaster.prototype.getUseReservations = function () {
+        return this.usereservations;
+    };
+    return UseReservationMaster;
 }());
-exports.JsonToSource = JsonToSource;
-function typestr(value) {
-    if (isNaN(value)) {
-        return 'string';
-    }
-    else {
-        return 'number';
-    }
-}
-function snakeCaseToClassName(userInput) {
-    var userOutPut = '';
-    var userInputSplit = userInput.split('_');
-    var x = 0;
-    for (var _i = 0, userInputSplit_1 = userInputSplit; _i < userInputSplit_1.length; _i++) {
-        var prm = userInputSplit_1[_i];
-        userOutPut += prm.substr(0, 1).toUpperCase() + prm.substr(1).toLowerCase();
-        x++;
-    }
-    return userOutPut;
-}
-function snakeCaseToCamelCase(userInput) {
-    var userOutPut = '';
-    var userInputSplit = userInput.split('_');
-    var x = 0;
-    for (var _i = 0, userInputSplit_2 = userInputSplit; _i < userInputSplit_2.length; _i++) {
-        var prm = userInputSplit_2[_i];
-        if (x === 0) {
-            userOutPut = prm.toLowerCase();
-        }
-        else {
-            userOutPut += prm.substr(0, 1).toUpperCase() + prm.substr(1).toLowerCase();
-        }
-        x++;
-    }
-    return userOutPut;
-}
+exports.UseReservationMaster = UseReservationMaster;

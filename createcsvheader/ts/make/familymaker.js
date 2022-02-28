@@ -40,11 +40,13 @@ var FamilyMaker = /** @class */ (function () {
         this.childrens = [];
         this.childrenDetails = [];
         this.interviews = [];
-        this.user = this.makeUser();
+        this.multipleBirthsHouseholdFlag = 0;
         switch (this.pattern) {
             case exports.FamilyPattern.Children1:
             case exports.FamilyPattern.Children2:
             case exports.FamilyPattern.Children3:
+                this.multipleBirthsHouseholdFlag = 0;
+                break;
             case exports.FamilyPattern.Futago2:
             case exports.FamilyPattern.Futago3:
             case exports.FamilyPattern.Mitsugo3:
@@ -54,6 +56,7 @@ var FamilyMaker = /** @class */ (function () {
             default:
                 this.multipleBirthsHouseholdFlag = 0;
         }
+        this.user = this.makeUser();
     }
     FamilyMaker.prototype.make = function () {
         this.makeChildren();
@@ -242,7 +245,7 @@ var FamilyMaker = /** @class */ (function () {
                 welfareHouseholdFlag: basicInterview.welfareHouseholdFlag,
                 taxExemptHouseholdFlag: basicInterview.taxExemptHouseholdFlag,
                 singleParentHouseholdFlag: basicInterview.singleParentHouseholdFlag,
-                multipleBirthsHouseholdFlag: child.multipleBirthsFlag,
+                multipleBirthsHouseholdFlag: _this.multipleBirthsHouseholdFlag,
                 limitApprovalFlag: basicInterview.limitApprovalFlag,
                 childcareBusinessUserFlag: basicInterview.childcareBusinessUserFlag,
                 noChildcareProvidedFlag: basicInterview.noChildcareProvidedFlag,

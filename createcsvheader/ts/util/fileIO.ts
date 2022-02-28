@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+import { Entity } from '../dto/entity';
 const csv = require('csv-parser');
 
 export type Converter<T> = (
@@ -31,3 +32,16 @@ export const readJson = async<T> (filePath: string): Promise<Array<T>> =>
         );
     });
 
+export const exportCSV = async (path: string, tablename: string, records: Array<Entity>) => {
+    const ObjToCSV = require('objects-to-csv');
+    const csv = new ObjToCSV(records);
+    const filePath = path + tablename + '.csv';
+    if (fs.existsSync(filePath)) {
+        let now = Date.now();
+        let backupfilepath = path + 'backup/' + tablename + '.' + now + '.csv';
+        fs.renameSync(filePath, backupfilepath);
+        }
+    // Save to file:
+    await csv.toDisk(filePath);
+}
+    

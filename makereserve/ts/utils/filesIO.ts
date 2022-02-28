@@ -90,4 +90,3 @@ export const exportSql = (path: string, tablename: string, records: Array<Entity
             console.log(e);
           }  
 }
-

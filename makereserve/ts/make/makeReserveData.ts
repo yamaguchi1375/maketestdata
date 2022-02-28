@@ -39,6 +39,11 @@ export class ReserveDataMaker {
         let record = status == ReserveStatus.Request ? { ...basicRequestUseReservationEntity } :
         status == ReserveStatus.Approved ? { ...basicReservedUseReservationEntity }
         : { ...basicUsedUseReservationEntity };
+        let cancelval = Math.floor(Math.random() * (15 - 1));
+        if (cancelval == 0) {
+            // 1/15 でキャンセルにする
+            record.status = 3;
+        }
         record.reservation_no = this.startReserveNo;
         record.user_id = child.user_id;
         record.child_id = child.child_id;

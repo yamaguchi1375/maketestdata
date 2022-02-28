@@ -49,11 +49,13 @@ export class FamilyMaker {
         this.childrens = [];
         this.childrenDetails = [];
         this.interviews = [];
-        this.user = this.makeUser();
+        this.multipleBirthsHouseholdFlag = 0;
         switch (this.pattern) {
             case FamilyPattern.Children1:
             case FamilyPattern.Children2:
             case FamilyPattern.Children3:
+                this.multipleBirthsHouseholdFlag = 0;
+                break;
             case FamilyPattern.Futago2:
             case FamilyPattern.Futago3:
             case FamilyPattern.Mitsugo3:
@@ -63,6 +65,7 @@ export class FamilyMaker {
             default:
                 this.multipleBirthsHouseholdFlag = 0;
         }
+        this.user = this.makeUser();
     }
 
     make(): Family {
@@ -257,7 +260,7 @@ export class FamilyMaker {
                 welfareHouseholdFlag: basicInterview.welfareHouseholdFlag,
                 taxExemptHouseholdFlag: basicInterview.taxExemptHouseholdFlag,
                 singleParentHouseholdFlag: basicInterview.singleParentHouseholdFlag,
-                multipleBirthsHouseholdFlag: child.multipleBirthsFlag,
+                multipleBirthsHouseholdFlag: this.multipleBirthsHouseholdFlag,
                 limitApprovalFlag: basicInterview.limitApprovalFlag,
                 childcareBusinessUserFlag: basicInterview.childcareBusinessUserFlag,
                 noChildcareProvidedFlag: basicInterview.noChildcareProvidedFlag,

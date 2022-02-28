@@ -13,10 +13,10 @@ export class ReserveDataStore {
     getFixdata(): Array<UsageRecord> {
         return this.fixdata;
     };
-    addReserveData(record: any) {
+    addReserveData(record: UseReservation) {
         this.reservedata.push(record);
     }
-    addFixData(record: any) {
+    addFixData(record: UsageRecord) {
         this.fixdata.push(record);
     }
 };

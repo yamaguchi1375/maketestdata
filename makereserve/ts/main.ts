@@ -1,20 +1,25 @@
 import { CalendarMst } from "./dtos/dtos";
-import { Children } from "./entity/entites";
+import { Children, MendanTarget, UseReservation } from "./entity/entites";
 import { ReserveDataMaker } from "./make/makeReserveData";
 import { CalendarMaster, getAcceptDate } from "./master/CalendarMaster";
 import { ChildrenMaster } from "./master/ChildrenMaster";
+import { UseReservationMaster } from "./master/UseReservationMaster";
 import { ReserveDataStore } from "./stores/reservestore";
 import { get1DayCount, getRandumReservePettern, getReserveStatus, ReserveStatus } from "./types/reservetime";
-import { exportCSV, exportSql } from "./utils/filesIO";
+import { Converter, exportCSV, exportSql, readCsv } from "./utils/filesIO";
 import { JsonPathToSource, JsonToBasicSouce } from "./utils/makesource";
 
 const CALENDAR_PATH = `/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/calendarmst.csv`;
-const CHILDREN_PATH = `/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/reserve/children.json`;
+const CALENDAR_MENDAN_PATH = `/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/calendarmendanmst.csv`;
 
-/* param area */
-const FACILITY_ID = 'a10035';
-const ACTIVITY_USER_ID = 'afb530ae-a1e7-477c-aab5-9a779603e2d6';
-const START_RESERVE_NO = 6;
+/* ------------ param area ------------- */
+const FACILITY_ID = 'a10041';
+const ACTIVITY_USER_ID = '4dc2298b-7b37-442b-a818-b935ca1c0077';
+const CHILDREN_PATH = `/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/reserve/children_a10041.json`;
+const START_RESERVE_NO = 2299;
+/* ------------ param area ------------- */
+
+
 const SQL_EXPORT_PATH = "/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/reserve/exportsql/";
 const CSV_EXPORT_PATH = "/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/reserve/exportcsv/";
 
@@ -33,6 +38,7 @@ async function main() {
     // makeEntitySource();
     // makeBasicData();
     makeReserveDatas();
+    // makeMendanData();
 }
 
 async function makeReserveDatas() {
@@ -51,8 +57,6 @@ async function makeReserveDatas() {
     exportCSV(CSV_EXPORT_PATH, 'use_reservation', maker.getDataStore().getReserveData());   
     exportCSV(CSV_EXPORT_PATH, 'usage_record', maker.getDataStore().getFixdata());   
 
-    // console.log(maker.getDataStore().getReserveData());
-    // console.log(maker.getDataStore().getFixdata());
     console.log('end make reserve datas');
 }
 
@@ -71,4 +75,28 @@ function makeReserveData(maker: ReserveDataMaker, date: string) {
         maker.make(date, childrenOneDay);
     }
 }
+
+async function makeMendanData() {
+    let filePath = CSV_EXPORT_PATH + 'use_reservation.csv';
+    let reservationmst = new UseReservationMaster();
+    await reservationmst.setup(filePath);
+    let useReservations = reservationmst.getUseReservations();
+    let targetDays = await loadMendanTargetDays();
+    let createDate = new Array<MendanTarget>();
+    targetDays.forEach(cal => {
+        let count = useReservations.filter(record => record.usage_date == cal.date).length;
+        if (count < 10) {
+            createDate.push({target_date: cal.date});
+        }
+    });
+    exportCSV(CSV_EXPORT_PATH, 'mendan_target', createDate);
+}
+
+async function loadMendanTargetDays(): Promise<Array<CalendarMst>> {
+    let calendarmst = new CalendarMaster();
+    await calendarmst.setup(CALENDAR_MENDAN_PATH);
+    return new Promise((resolve, reject) => {
+        resolve(calendarmst.getCalendar());
+    });
+};
 

@@ -39,15 +39,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var makeReserveData_1 = require("./make/makeReserveData");
 var CalendarMaster_1 = require("./master/CalendarMaster");
 var ChildrenMaster_1 = require("./master/ChildrenMaster");
+var UseReservationMaster_1 = require("./master/UseReservationMaster");
 var reservetime_1 = require("./types/reservetime");
 var filesIO_1 = require("./utils/filesIO");
 var makesource_1 = require("./utils/makesource");
 var CALENDAR_PATH = "/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/calendarmst.csv";
-var CHILDREN_PATH = "/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/reserve/children.json";
-/* param area */
-var FACILITY_ID = 'a10035';
-var ACTIVITY_USER_ID = 'afb530ae-a1e7-477c-aab5-9a779603e2d6';
-var START_RESERVE_NO = 6;
+var CALENDAR_MENDAN_PATH = "/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/calendarmendanmst.csv";
+/* ------------ param area ------------- */
+var FACILITY_ID = 'a10041';
+var ACTIVITY_USER_ID = '4dc2298b-7b37-442b-a818-b935ca1c0077';
+var CHILDREN_PATH = "/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/reserve/children_a10041.json";
+var START_RESERVE_NO = 2299;
+/* ------------ param area ------------- */
 var SQL_EXPORT_PATH = "/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/reserve/exportsql/";
 var CSV_EXPORT_PATH = "/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/reserve/exportcsv/";
 function makeEntitySource() {
@@ -106,8 +109,6 @@ function makeReserveDatas() {
                     (0, filesIO_1.exportSql)(SQL_EXPORT_PATH, 'usage_record', maker.getDataStore().getFixdata());
                     (0, filesIO_1.exportCSV)(CSV_EXPORT_PATH, 'use_reservation', maker.getDataStore().getReserveData());
                     (0, filesIO_1.exportCSV)(CSV_EXPORT_PATH, 'usage_record', maker.getDataStore().getFixdata());
-                    // console.log(maker.getDataStore().getReserveData());
-                    // console.log(maker.getDataStore().getFixdata());
                     console.log('end make reserve datas');
                     return [2 /*return*/];
             }
@@ -139,3 +140,49 @@ function makeReserveData(maker, date) {
         maker.make(date, childrenOneDay);
     }
 }
+function makeMendanData() {
+    return __awaiter(this, void 0, void 0, function () {
+        var filePath, reservationmst, useReservations, targetDays, createDate;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    filePath = CSV_EXPORT_PATH + 'use_reservation.csv';
+                    reservationmst = new UseReservationMaster_1.UseReservationMaster();
+                    return [4 /*yield*/, reservationmst.setup(filePath)];
+                case 1:
+                    _a.sent();
+                    useReservations = reservationmst.getUseReservations();
+                    return [4 /*yield*/, loadMendanTargetDays()];
+                case 2:
+                    targetDays = _a.sent();
+                    createDate = new Array();
+                    targetDays.forEach(function (cal) {
+                        var count = useReservations.filter(function (record) { return record.usage_date == cal.date; }).length;
+                        if (count < 10) {
+                            createDate.push({ target_date: cal.date });
+                        }
+                    });
+                    (0, filesIO_1.exportCSV)(CSV_EXPORT_PATH, 'mendan_target', createDate);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function loadMendanTargetDays() {
+    return __awaiter(this, void 0, void 0, function () {
+        var calendarmst;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    calendarmst = new CalendarMaster_1.CalendarMaster();
+                    return [4 /*yield*/, calendarmst.setup(CALENDAR_MENDAN_PATH)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/, new Promise(function (resolve, reject) {
+                            resolve(calendarmst.getCalendar());
+                        })];
+            }
+        });
+    });
+}
+;
