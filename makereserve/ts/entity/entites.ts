@@ -195,4 +195,6 @@ export let basicUsageRecordEntity: UsageRecord = {
     update_datetime: '2022-02-26 02:13:27.215',
 };
 
-  
+export interface MendanTarget extends Entity {
+    target_date: string;
+}

@@ -10,7 +10,7 @@ module.exports = {
     // バンドル後のjsファイル出力先を指定
     output:{
         path: path.resolve(__dirname, 'build'),
-        filename: 'index.js'
+        filename: 'main.js'
     },
     module: {
       rules: [

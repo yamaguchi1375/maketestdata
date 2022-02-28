@@ -48,20 +48,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserIdMaster = void 0;
 var fileIO_1 = require("../util/fileIO");
 var UserIdMaster = /** @class */ (function () {
-    function UserIdMaster(startIndex) {
+    function UserIdMaster(facility_id, startIndex) {
         this.userids = [];
+        this.facility_id = facility_id;
         this.index = startIndex;
     }
     UserIdMaster.prototype.setup = function (path) {
         return __awaiter(this, void 0, void 0, function () {
-            var result;
+            var result, facilityUsers;
             var _a;
+            var _this = this;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0: return [4 /*yield*/, (0, fileIO_1.readJson)(path)];
                     case 1:
                         result = _b.sent();
-                        (_a = this.userids).splice.apply(_a, __spreadArray([this.userids.length, 0], result, false));
+                        facilityUsers = result.filter(function (r) { return r.facility_id == _this.facility_id; });
+                        (_a = this.userids).splice.apply(_a, __spreadArray([this.userids.length, 0], facilityUsers, false));
                         return [2 /*return*/];
                 }
             });

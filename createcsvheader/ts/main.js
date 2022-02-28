@@ -72,38 +72,75 @@ var psersonmst_1 = require("./master/psersonmst");
 var idmanagement_1 = require("./make/idmanagement");
 var familymaker_1 = require("./make/familymaker");
 var familiesmaker_1 = require("./make/familiesmaker");
+var jsonToSource_1 = require("./util/jsonToSource");
 var entity_1 = require("./dto/entity");
 var useridmst_1 = require("./master/useridmst");
+var fileIO_1 = require("./util/fileIO");
+var mendantargetmst_1 = require("./master/mendantargetmst");
+var mendanusermaker_1 = require("./make/mendanusermaker");
+var spreasonsumpplemeter_1 = require("./supplements/spreasonsumpplemeter");
 // マスタ読み込みパス
 var JYUSYO_PATH = "/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/yubin_hama.csv";
 var OTONA_PATH = "/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/otona.csv";
 var KODOMO_PATH = "/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/kodomo.csv";
-var USERID_PATH = "/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/userid_mst_a10035.json";
 var EXPORT_SQL_PATH = '/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportsql/';
-// PARAM
-var PARAM_MAIL_PREFIX = "slk.ty.yamaguchi";
-var PARAM_MAIL_SUFFIX = "gmail.com";
-var PARAM_MAIL_STARTINDEX = 103;
-var PARAM_CHILDREN_ID_PREFIX = "shibata";
-var PARAM_CHILDREN_ID_START_INDEX = 1;
+var EXPORT_MENDAN_SQL_PATH = '/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportsql/mendan/';
+var EXPORT_CSV_PATH = '/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportcsv/';
+//------------- PARAM ------------------
+var USERID_PATH = "/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/userid_mst.json";
+// staging facilityId
+var STAGING_FACILITY_ID = 'a10041';
+//------------- PARAM ------------------
 var PARAM_INTERVIEW_NO_START_INDEX = 1;
 // facilityId
 // const PARAM_FACILITY_ID = 'a0005';
-var PARAM_FACILITY_ID = 'a00021';
-// staging facilityId
-var STAGING_FACILITY_ID = 'a10035';
-var STAGING_FACILITY_USER_ID = 'afb530ae-a1e7-477c-aab5-9a779603e2d6';
-var DATE_CRAETE_PRC_DATE = '2022-02-22 10:07:31.996';
+// const PARAM_FACILITY_ID = 'a00021';
 main();
+//-------------------------------------------------------------------
+// やること
+// 1. userid_mst_a10035.json みたいなデータをWebのツールで csv -> json して配置
+// 2. STAGING_FACILITY_ID を設定
+// 3. 
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var params, jyusyoMaster, personMaster, userIdMaster, interviewNoMaker, famillesMaker, familles, users_1, children_1, childrendetails_1, interviews_1, ObjectsToCsv_1, err_1;
-        var _this = this;
+        var err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 4, , 5]);
-                    params = new familiesmaker_1.FamillesMakerParam(PARAM_FACILITY_ID);
+                    _a.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, createFirstUserData()];
+                case 1:
+                    _a.sent();
+                    // createSourceCode();
+                    return [4 /*yield*/, createMendanData()];
+                case 2:
+                    // createSourceCode();
+                    _a.sent();
+                    return [3 /*break*/, 4];
+                case 3:
+                    err_1 = _a.sent();
+                    console.log(err_1);
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+}
+function createFirstUserData() {
+    return __awaiter(this, void 0, void 0, function () {
+        var params, jyusyoMaster, personMaster, userIdMaster, interviewNoMaker, famillesMaker, familles, supplementer, users, children, childrendetails, interviews, ObjectsToCsv;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    params = new familiesmaker_1.FamillesMakerParam(STAGING_FACILITY_ID);
+                    // main
+                    params.pushPettern(new familiesmaker_1.FamilyMakerType(familymaker_1.FamilyPattern.Children1, 10));
+                    params.pushPettern(new familiesmaker_1.FamilyMakerType(familymaker_1.FamilyPattern.Children2, 6));
+                    params.pushPettern(new familiesmaker_1.FamilyMakerType(familymaker_1.FamilyPattern.Children3, 4));
+                    params.pushPettern(new familiesmaker_1.FamilyMakerType(familymaker_1.FamilyPattern.Futago2, 2));
+                    params.pushPettern(new familiesmaker_1.FamilyMakerType(familymaker_1.FamilyPattern.Futago3, 1));
+                    params.pushPettern(new familiesmaker_1.FamilyMakerType(familymaker_1.FamilyPattern.Mitsugo3, 1));
+                    params.pushPettern(new familiesmaker_1.FamilyMakerType(familymaker_1.FamilyPattern.Mitsugo4, 1));
                     jyusyoMaster = new jyusyomst_1.JyusyoMaster();
                     return [4 /*yield*/, jyusyoMaster.setup(JYUSYO_PATH)];
                 case 1:
@@ -112,101 +149,92 @@ function main() {
                     return [4 /*yield*/, personMaster.setup(OTONA_PATH, KODOMO_PATH)];
                 case 2:
                     _a.sent();
-                    userIdMaster = new useridmst_1.UserIdMaster(44);
+                    userIdMaster = new useridmst_1.UserIdMaster(STAGING_FACILITY_ID, 0);
                     return [4 /*yield*/, userIdMaster.setup(USERID_PATH)];
                 case 3:
                     _a.sent();
                     interviewNoMaker = new idmanagement_1.InterviewNoMaker(PARAM_INTERVIEW_NO_START_INDEX);
-                    // test
-                    params.pushPettern(new familiesmaker_1.FamilyMakerType(familymaker_1.FamilyPattern.Children1, 1));
-                    params.pushPettern(new familiesmaker_1.FamilyMakerType(familymaker_1.FamilyPattern.Children2, 1));
-                    params.pushPettern(new familiesmaker_1.FamilyMakerType(familymaker_1.FamilyPattern.Futago3, 1));
                     famillesMaker = new familiesmaker_1.FamillesMaker(jyusyoMaster, personMaster, userIdMaster, interviewNoMaker);
                     familles = famillesMaker.make(params);
-                    users_1 = convertUsers(familles);
-                    children_1 = convertChildren(familles);
-                    childrendetails_1 = convertChildrenDetail(familles);
-                    interviews_1 = convertInterviews(familles);
-                    ObjectsToCsv_1 = require('objects-to-csv');
-                    (function () { return __awaiter(_this, void 0, void 0, function () {
-                        var csv;
-                        return __generator(this, function (_a) {
-                            switch (_a.label) {
-                                case 0:
-                                    csv = new ObjectsToCsv_1(users_1);
-                                    // Save to file:
-                                    return [4 /*yield*/, csv.toDisk('/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportcsv/users.csv')];
-                                case 1:
-                                    // Save to file:
-                                    _a.sent();
-                                    return [2 /*return*/];
-                            }
-                        });
-                    }); })();
-                    (function () { return __awaiter(_this, void 0, void 0, function () {
-                        var csv;
-                        return __generator(this, function (_a) {
-                            switch (_a.label) {
-                                case 0:
-                                    csv = new ObjectsToCsv_1(children_1);
-                                    // Save to file:
-                                    return [4 /*yield*/, csv.toDisk('/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportcsv/children.csv')];
-                                case 1:
-                                    // Save to file:
-                                    _a.sent();
-                                    return [2 /*return*/];
-                            }
-                        });
-                    }); })();
-                    (function () { return __awaiter(_this, void 0, void 0, function () {
-                        var csv;
-                        return __generator(this, function (_a) {
-                            switch (_a.label) {
-                                case 0:
-                                    csv = new ObjectsToCsv_1(childrendetails_1);
-                                    // Save to file:
-                                    return [4 /*yield*/, csv.toDisk('/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportcsv/childrendetails.csv')];
-                                case 1:
-                                    // Save to file:
-                                    _a.sent();
-                                    return [2 /*return*/];
-                            }
-                        });
-                    }); })();
-                    (function () { return __awaiter(_this, void 0, void 0, function () {
-                        var csv, _a, _b;
-                        return __generator(this, function (_c) {
-                            switch (_c.label) {
-                                case 0:
-                                    csv = new ObjectsToCsv_1(interviews_1);
-                                    // Save to file:
-                                    return [4 /*yield*/, csv.toDisk('/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportcsv/interviews.csv')];
-                                case 1:
-                                    // Save to file:
-                                    _c.sent();
-                                    // Return the CSV file as string:
-                                    _b = (_a = console).log;
-                                    return [4 /*yield*/, csv.toString()];
-                                case 2:
-                                    // Return the CSV file as string:
-                                    _b.apply(_a, [_c.sent()]);
-                                    return [2 /*return*/];
-                            }
-                        });
-                    }); })();
-                    exportSqlEntity("users", users_1);
-                    exportSqlEntity("children", children_1);
-                    exportSqlEntity("children_detail", childrendetails_1);
-                    exportSqlEntity("interviews", interviews_1);
-                    return [3 /*break*/, 5];
+                    supplementer = new spreasonsumpplemeter_1.SPReasonSupplementer(familles);
+                    supplementer.supplement();
+                    users = convertUsers(familles);
+                    children = convertChildren(familles);
+                    childrendetails = convertChildrenDetail(familles);
+                    interviews = convertInterviews(familles);
+                    ObjectsToCsv = require('objects-to-csv');
+                    return [4 /*yield*/, (0, fileIO_1.exportCSV)(EXPORT_CSV_PATH, 'users', users)];
                 case 4:
-                    err_1 = _a.sent();
-                    console.log(err_1);
-                    return [3 /*break*/, 5];
-                case 5: return [2 /*return*/];
+                    _a.sent();
+                    return [4 /*yield*/, (0, fileIO_1.exportCSV)(EXPORT_CSV_PATH, 'children', children)];
+                case 5:
+                    _a.sent();
+                    return [4 /*yield*/, (0, fileIO_1.exportCSV)(EXPORT_CSV_PATH, 'childrendetails', childrendetails)];
+                case 6:
+                    _a.sent();
+                    return [4 /*yield*/, (0, fileIO_1.exportCSV)(EXPORT_CSV_PATH, 'interviews', interviews)];
+                case 7:
+                    _a.sent();
+                    exportSqlEntity(EXPORT_SQL_PATH, "users", users);
+                    exportSqlEntity(EXPORT_SQL_PATH, "children", children);
+                    exportSqlEntity(EXPORT_SQL_PATH, "children_detail", childrendetails);
+                    exportSqlEntity(EXPORT_SQL_PATH, "interviews", interviews);
+                    return [2 /*return*/];
             }
         });
     });
+}
+function createMendanData() {
+    return __awaiter(this, void 0, void 0, function () {
+        var targetMst, targets, jyusyoMaster, personMaster, userIdMaster, interviewNoMaker, famillesMaker, params, familles, users, children, childrendetails, interviews, mendanMaker;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    targetMst = new mendantargetmst_1.MendanTargetMaster();
+                    return [4 /*yield*/, targetMst.setup("/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/reserve/exportcsv/mendan_target.csv")];
+                case 1:
+                    _a.sent();
+                    targets = targetMst.getTargetsDate();
+                    jyusyoMaster = new jyusyomst_1.JyusyoMaster();
+                    return [4 /*yield*/, jyusyoMaster.setup(JYUSYO_PATH)];
+                case 2:
+                    _a.sent();
+                    personMaster = new psersonmst_1.PersonMaster();
+                    return [4 /*yield*/, personMaster.setup(OTONA_PATH, KODOMO_PATH)];
+                case 3:
+                    _a.sent();
+                    userIdMaster = new useridmst_1.UserIdMaster(STAGING_FACILITY_ID, 26);
+                    return [4 /*yield*/, userIdMaster.setup(USERID_PATH)];
+                case 4:
+                    _a.sent();
+                    interviewNoMaker = new idmanagement_1.InterviewNoMaker(PARAM_INTERVIEW_NO_START_INDEX);
+                    famillesMaker = new familiesmaker_1.FamillesMaker(jyusyoMaster, personMaster, userIdMaster, interviewNoMaker);
+                    params = new familiesmaker_1.FamillesMakerParam(STAGING_FACILITY_ID);
+                    params.pushPettern(new familiesmaker_1.FamilyMakerType(familymaker_1.FamilyPattern.Children1, targets.length));
+                    familles = famillesMaker.make(params);
+                    users = convertUsers(familles);
+                    children = convertChildren(familles);
+                    childrendetails = convertChildrenDetail(familles);
+                    interviews = convertInterviews(familles);
+                    mendanMaker = new mendanusermaker_1.MendanMaker(targets, interviews);
+                    mendanMaker.make();
+                    exportSqlEntity(EXPORT_MENDAN_SQL_PATH, "users", users);
+                    exportSqlEntity(EXPORT_MENDAN_SQL_PATH, "children", children);
+                    exportSqlEntity(EXPORT_MENDAN_SQL_PATH, "children_detail", childrendetails);
+                    exportSqlEntity(EXPORT_MENDAN_SQL_PATH, "interviews", interviews);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function createSourceCode() {
+    var csvToJson = require('convert-csv-to-json');
+    var json = csvToJson.fieldDeimiter(',').formatValueByType().getJsonFromCsv("/Users/yamaguchitakeshi/slk/gitwork/maketestdata/example/children_detail.csv");
+    for (var i = 0; i < json.length; i++) {
+        console.log(json[i]);
+        jsonToBasicObj(json[i]);
+        jsonToSource_1.JsonToSource.makeInterfaceSourc('children_detail', json[i]);
+    }
 }
 var Table = /** @class */ (function () {
     function Table(tblData, columns) {
@@ -378,13 +406,13 @@ function camelToUnderscore(key) {
     var result = key.replace(/([A-Z])/g, " $1");
     return result.split(' ').join('_').toLowerCase();
 }
-function exportSqlEntity(tablename, records) {
+function exportSqlEntity(prefixpath, tablename, records) {
     // 同期で行う場合
     try {
-        var filePath_1 = EXPORT_SQL_PATH + tablename + '_ins.sql';
+        var filePath_1 = prefixpath + tablename + '_ins.sql';
         if (fs.existsSync(filePath_1)) {
             var now = Date.now();
-            var backupfilepath = EXPORT_SQL_PATH + '/backup/' + tablename + '_ins.' + now + '.js';
+            var backupfilepath = prefixpath + '/backup/' + tablename + '_ins.' + now + '.js';
             fs.renameSync(filePath_1, backupfilepath);
         }
         records.forEach(function (record) {

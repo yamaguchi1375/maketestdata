@@ -282,9 +282,9 @@ export let basicUserEntity: UsersEntity = {
     multipleBirthsHouseholdFlag: 0,
     deleteFlag: 0,
     createUser: 'f8dc737e-28d6-424d-9d88-6bb1ee1efc40',
-    createDatetime: '2022-02-22 23:07:31.887',
+    createDatetime: '2022-02-22 14:07:31.887',
     updateUser: 'f8dc737e-28d6-424d-9d88-6bb1ee1efc40',
-    updateDatetime: '2022-02-22 23:07:31.887'
+    updateDatetime: '2022-02-22 14:07:31.887'
 };
 
 export interface ChildrenEntity extends Entity {
@@ -352,9 +352,9 @@ export let basicChildrenEntity: ChildrenEntity = {
     limitApprovalFlag: 0,
     deleteFlag: 0,
     createUser: 'f8dc737e-28d6-424d-9d88-6bb1ee1efc40',
-    createDatetime: '2022-02-22 23:07:31.996',
+    createDatetime: '2022-02-22 14:07:31.996',
     updateUser: 'f8dc737e-28d6-424d-9d88-6bb1ee1efc40',
-    updateDatetime: '2022-02-22 23:07:31.996'
+    updateDatetime: '2022-02-22 14:07:31.996'
 };  
 
 export interface InterviewsEntity extends Entity {
@@ -482,7 +482,7 @@ export interface InterviewsEntity extends Entity {
     reservationFixTimeFrom: '16:00:00',
     reservationFixTimeTo: '16:03:00',
     reservationMethod: 1,
-    reservationDatetime: '2022-02-22 23:05:55',
+    reservationDatetime: '2022-02-22 14:05:55',
     status: 2,
     parentName: '浅利 美和子',
     parentKana: 'アサリ ミワコ',
@@ -570,9 +570,9 @@ export interface InterviewsEntity extends Entity {
     userId: '814a3ff0-dae2-4f89-a6ec-29275f0cea5a',
     childId: '01',
     createUser: 'f8dc737e-28d6-424d-9d88-6bb1ee1efc40',
-    createDatetime: '2022-02-22 23:05:55.134',
+    createDatetime: '2022-02-22 14:05:55.134',
     updateUser: 'f8dc737e-28d6-424d-9d88-6bb1ee1efc40',
-    updateDatetime: '2022-02-22 23:07:32.192'
+    updateDatetime: '2022-02-22 14:07:32.192'
   };
 
   export interface ChildrenDetailEntity extends Entity {
@@ -635,7 +635,11 @@ export let basicChildrenDetailEntity: ChildrenDetailEntity =
     leaveChildTo: 0,
     note: 'NULL',
     createUser: 'f8dc737e-28d6-424d-9d88-6bb1ee1efc40',
-    createDatetime: '2022-02-22 23:07:32.108',
+    createDatetime: '2022-02-22 14:07:32.108',
     updateUser: 'f8dc737e-28d6-424d-9d88-6bb1ee1efc40',
-    updateDatetime: '2022-02-22 23:07:32.108'
-  }
+    updateDatetime: '2022-02-22 14:07:32.108'
+}
+
+export interface MendanTarget extends Entity {
+    target_date: string;
+}

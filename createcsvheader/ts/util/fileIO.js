@@ -55,7 +55,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.readJson = exports.readCsv = void 0;
+exports.exportCSV = exports.readJson = exports.readCsv = void 0;
 var fs = __importStar(require("fs"));
 var csv = require('csv-parser');
 var readCsv = function (filePath, converter) { return __awaiter(void 0, void 0, void 0, function () {
@@ -85,3 +85,26 @@ var readJson = function (filePath) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 exports.readJson = readJson;
+var exportCSV = function (path, tablename, records) { return __awaiter(void 0, void 0, void 0, function () {
+    var ObjToCSV, csv, filePath, now, backupfilepath;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                ObjToCSV = require('objects-to-csv');
+                csv = new ObjToCSV(records);
+                filePath = path + tablename + '.csv';
+                if (fs.existsSync(filePath)) {
+                    now = Date.now();
+                    backupfilepath = path + 'backup/' + tablename + '.' + now + '.csv';
+                    fs.renameSync(filePath, backupfilepath);
+                }
+                // Save to file:
+                return [4 /*yield*/, csv.toDisk(filePath)];
+            case 1:
+                // Save to file:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.exportCSV = exportCSV;

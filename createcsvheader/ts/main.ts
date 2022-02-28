@@ -11,31 +11,31 @@ import { JsonToSource } from './util/jsonToSource';
 import { ChildrenDetailEntity, ChildrenEntity, Entity, EntityConverter, InterviewsEntity, UsersEntity } from './dto/entity';
 import { UserIdMaster } from './master/useridmst';
 import { exportCSV } from './util/fileIO';
+import { MendanTargetMaster } from './master/mendantargetmst';
+import { MendanMaker } from './make/mendanusermaker';
+import { SPReasonSupplementer } from './supplements/spreasonsumpplemeter';
 
 // マスタ読み込みパス
 const JYUSYO_PATH = `/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/yubin_hama.csv`;
 const OTONA_PATH = `/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/otona.csv`;
 const KODOMO_PATH = `/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/kodomo.csv`;
-const USERID_PATH = `/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/userid_mst_a10035.json`;
 
 const EXPORT_SQL_PATH = '/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportsql/';
+const EXPORT_MENDAN_SQL_PATH = '/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportsql/mendan/';
 const EXPORT_CSV_PATH = '/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportcsv/';
 
-// PARAM
-const PARAM_MAIL_PREFIX = `slk.ty.yamaguchi`;
-const PARAM_MAIL_SUFFIX = `gmail.com`;
-const PARAM_MAIL_STARTINDEX = 101;
-const PARAM_CHILDREN_ID_PREFIX = `shibata`;
-const PARAM_CHILDREN_ID_START_INDEX = 1;
+//------------- PARAM ------------------
+const USERID_PATH = `/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/userid_mst.json`;
+// staging facilityId
+const STAGING_FACILITY_ID = 'a10041';
+//------------- PARAM ------------------
 
 const PARAM_INTERVIEW_NO_START_INDEX = 1;
 
 // facilityId
 // const PARAM_FACILITY_ID = 'a0005';
-const PARAM_FACILITY_ID = 'a00021';
+// const PARAM_FACILITY_ID = 'a00021';
 
-// staging facilityId
-const STAGING_FACILITY_ID = 'a10035';
 
 main();
 
@@ -47,21 +47,19 @@ main();
 
 async function main() {
   try {
-    // const table = await makeTable();
-    // consoleCsvOut(table);
-    // consoleTypeSrcOut(table);
+    await createFirstUserData();
+    // createSourceCode();
+    await createMendanData();
 
-    // const familyMaker = new FamilyMaker(
-    //     FamilyPattern.Children1,
-    //     userIdMaker.createNewId(),
-    //     PARAM_FACILITY_ID,
-    //     childrenIdMaker,
-    //     interviewNoMaker,
-    //     jyusyoMaster,
-    //     personMaster
-    // );
-    // const family = familyMaker.make();
+  } catch (err) {
+    console.log(err);
+  }
 
+  /* ここまで作成ロジック */
+
+}
+
+async function createFirstUserData() {
     // const params = new FamillesMakerParam(STAGING_FACILITY_ID);
     const params = new FamillesMakerParam(STAGING_FACILITY_ID);
     
@@ -84,7 +82,7 @@ async function main() {
     await jyusyoMaster.setup(JYUSYO_PATH);
     const personMaster = new PersonMaster();
     await personMaster.setup(OTONA_PATH, KODOMO_PATH);
-    const userIdMaster = new UserIdMaster(44);
+    const userIdMaster = new UserIdMaster(STAGING_FACILITY_ID, 0);
     await userIdMaster.setup(USERID_PATH);
 
     const interviewNoMaker = new InterviewNoMaker(PARAM_INTERVIEW_NO_START_INDEX);
@@ -97,6 +95,8 @@ async function main() {
     );
 
     const familles = famillesMaker.make(params);
+    let supplementer = new SPReasonSupplementer(familles);
+    supplementer.supplement();
 
     const users = convertUsers(familles);
     const children = convertChildren(familles);
@@ -110,26 +110,60 @@ async function main() {
     await exportCSV(EXPORT_CSV_PATH, 'childrendetails', childrendetails);
     await exportCSV(EXPORT_CSV_PATH, 'interviews', interviews);
 
-    exportSqlEntity(`users`, users);
-    exportSqlEntity(`children`, children);
-    exportSqlEntity(`children_detail`, childrendetails);
-    exportSqlEntity(`interviews`, interviews);
+    exportSqlEntity(EXPORT_SQL_PATH, `users`, users);
+    exportSqlEntity(EXPORT_SQL_PATH,`children`, children);
+    exportSqlEntity(EXPORT_SQL_PATH,`children_detail`, childrendetails);
+    exportSqlEntity(EXPORT_SQL_PATH,`interviews`, interviews);
+
+}
+
+async function createMendanData() {
+  
+  let targetMst = new MendanTargetMaster();
+  await targetMst.setup(`/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/reserve/exportcsv/mendan_target.csv`);
+  let targets = targetMst.getTargetsDate();
+  /* ここから作成ロジック */
+  const jyusyoMaster = new JyusyoMaster();
+  await jyusyoMaster.setup(JYUSYO_PATH);
+  const personMaster = new PersonMaster();
+  await personMaster.setup(OTONA_PATH, KODOMO_PATH);
+  const userIdMaster = new UserIdMaster(STAGING_FACILITY_ID, 26);
+  await userIdMaster.setup(USERID_PATH);
+
+  const interviewNoMaker = new InterviewNoMaker(PARAM_INTERVIEW_NO_START_INDEX);
+  const famillesMaker = new FamillesMaker(
+    jyusyoMaster,
+    personMaster,
+    userIdMaster,
+    interviewNoMaker,
+  );
+  const params = new FamillesMakerParam(STAGING_FACILITY_ID);
+  params.pushPettern(new FamilyMakerType(FamilyPattern.Children1, targets.length));
+  const familles = famillesMaker.make(params);
+
+  const users = convertUsers(familles);
+  const children = convertChildren(familles);
+  const childrendetails = convertChildrenDetail(familles);
+  const interviews = convertInterviews(familles);
+  const mendanMaker = new MendanMaker(targets, interviews);
+  mendanMaker.make();
+
+  exportSqlEntity(EXPORT_MENDAN_SQL_PATH, `users`, users);
+  exportSqlEntity(EXPORT_MENDAN_SQL_PATH, `children`, children);
+  exportSqlEntity(EXPORT_MENDAN_SQL_PATH, `children_detail`, childrendetails);
+  exportSqlEntity(EXPORT_MENDAN_SQL_PATH, `interviews`, interviews);
+
+}
 
 
+function createSourceCode() {
   let csvToJson = require('convert-csv-to-json');
-  let json = csvToJson.fieldDelimiter(',').formatValueByType().getJsonFromCsv("/Users/yamaguchitakeshi/slk/gitwork/maketestdata/example/children_detail.csv");
+  let json = csvToJson.fieldDeimiter(',').formatValueByType().getJsonFromCsv("/Users/yamaguchitakeshi/slk/gitwork/maketestdata/example/children_detail.csv");
   for(let i=0; i<json.length;i++){
     console.log(json[i]);
     jsonToBasicObj(json[i]);
     JsonToSource.makeInterfaceSourc('children_detail', json[i]);
   }
-
-} catch (err) {
-    console.log(err);
-  }
-
-  /* ここまで作成ロジック */
-
 }
 
 type TblData = {
@@ -318,13 +352,13 @@ function camelToUnderscore(key: string) {
   return result.split(' ').join('_').toLowerCase();
 }
 
-function exportSqlEntity(tablename: string, records: Array<Entity>) {
+function exportSqlEntity(prefixpath: string, tablename: string, records: Array<Entity>) {
   // 同期で行う場合
   try {
-    let filePath = EXPORT_SQL_PATH + tablename + '_ins.sql'; 
+    let filePath = prefixpath + tablename + '_ins.sql'; 
     if (fs.existsSync(filePath)) {
       let now = Date.now();
-      let backupfilepath = EXPORT_SQL_PATH + '/backup/' + tablename + '_ins.' + now + '.js';
+      let backupfilepath = prefixpath + '/backup/' + tablename + '_ins.' + now + '.js';
       fs.renameSync(filePath, backupfilepath);
     }
     records.forEach(record => {

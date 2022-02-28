@@ -44,6 +44,11 @@ var ReserveDataMaker = /** @class */ (function () {
         var edateTime = date + ' ' + time.use_to_time;
         var record = status == reservetime_1.ReserveStatus.Request ? __assign({}, entites_1.basicRequestUseReservationEntity) :
             status == reservetime_1.ReserveStatus.Approved ? __assign({}, entites_1.basicReservedUseReservationEntity) : __assign({}, entites_1.basicUsedUseReservationEntity);
+        var cancelval = Math.floor(Math.random() * (15 - 1));
+        if (cancelval == 0) {
+            // 1/15 でキャンセルにする
+            record.status = 3;
+        }
         record.reservation_no = this.startReserveNo;
         record.user_id = child.user_id;
         record.child_id = child.child_id;
