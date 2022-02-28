@@ -1,12 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.InterviewNoMaker = exports.ChildIdMaker = exports.MailAdressMaker = exports.UserIdMaker = void 0;
+exports.InterviewNoMaker = exports.MailAdressMaker = exports.UserIdMaker = void 0;
+/* @deprecated */
 var UserIdMaker = /** @class */ (function () {
-    function UserIdMaker() {
+    function UserIdMaker(userids) {
+        this.userids = userids;
+        this.index = 0;
     }
-    UserIdMaker.prototype.createNewId = function () {
-        var uuidv4 = require('uuid').v4;
-        return uuidv4();
+    UserIdMaker.prototype.createNewUserId = function () {
+        return this.userids[this.index++];
     };
     return UserIdMaker;
 }());
@@ -23,18 +25,6 @@ var MailAdressMaker = /** @class */ (function () {
     return MailAdressMaker;
 }());
 exports.MailAdressMaker = MailAdressMaker;
-var ChildIdMaker = /** @class */ (function () {
-    function ChildIdMaker(prefix, startIndex) {
-        this.prefix = prefix;
-        this.startIndex = startIndex;
-    }
-    ChildIdMaker.prototype.createNewId = function () {
-        return this.prefix + new String(this.startIndex++);
-    };
-    ;
-    return ChildIdMaker;
-}());
-exports.ChildIdMaker = ChildIdMaker;
 var InterviewNoMaker = /** @class */ (function () {
     function InterviewNoMaker(startIndex) {
         this.startIndex = startIndex;

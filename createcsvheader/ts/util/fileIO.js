@@ -55,7 +55,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.readCsv = void 0;
+exports.readJson = exports.readCsv = void 0;
 var fs = __importStar(require("fs"));
 var csv = require('csv-parser');
 var readCsv = function (filePath, converter) { return __awaiter(void 0, void 0, void 0, function () {
@@ -75,3 +75,13 @@ var readCsv = function (filePath, converter) { return __awaiter(void 0, void 0, 
     });
 }); };
 exports.readCsv = readCsv;
+var readJson = function (filePath) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        return [2 /*return*/, new Promise(function (resolve, reject) {
+                fs.readFile(filePath, 'utf-8', function (err, data) {
+                    return err ? reject(err) : resolve(JSON.parse(data));
+                });
+            })];
+    });
+}); };
+exports.readJson = readJson;

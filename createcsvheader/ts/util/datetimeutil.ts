@@ -20,13 +20,18 @@ export class DateUtil {
     };
     static getRandomTime(starthour: number, endhour: number): number {
         var timenum = Math.floor( Math.random() * (endhour + 1 - starthour) ) +  starthour;
-        return timenum * 100;
+        return timenum;
     };
     static getRandomChoiceDate(birthday: string) {
         return DateUtil.getRandomYmd(birthday,'2022/02/15');
     };
-    static getRandomChoiceTime() {
-        return DateUtil.getRandomTime(10, 17);
+    static getRandomChoiceTime(): string {
+        return DateUtil.getRandomTime(10, 17) + `:00:00`;
+    };
+    static getEndReservDatetime(startTime: string): string {
+        let s: number = parseInt(startTime.split(':')[0]);
+        s += 1;
+        return new String(s) + `:00:00`;
     };
 }
 

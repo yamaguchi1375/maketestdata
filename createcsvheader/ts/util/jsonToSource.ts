@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+
 export class JsonToSource {
     static makeInterfaceSourc(tableName: string, json: object) {
         console.log(`export interface ` + snakeCaseToClassName(tableName) + ` {`);
@@ -5,6 +7,15 @@ export class JsonToSource {
             console.log(`  `   + snakeCaseToCamelCase(key) + `: ` +  typestr(value) + `;`);
         }
         console.log(`};`);
+    }
+    static async convertJsonToObject<T>(path: string, obj: T): Promise<Array<T>> {
+      return new Promise((resolve, reject) => {
+        let csvToJson = require('convert-csv-to-json');
+        let json = csvToJson.x(',').formatValueByType().getJsonFromCsv(path);
+        json.forEach(function(row: any) {
+          row['aaa'] = 'bbb';
+        });
+      });
     }
 }
 

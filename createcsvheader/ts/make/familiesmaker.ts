@@ -1,8 +1,9 @@
 import { Children, Family, Interviews, Users } from "../dto/dtos";
 import { JyusyoMaster } from "../master/jyusyomst";
 import { PersonMaster } from "../master/psersonmst";
+import { UserIdMaster } from "../master/useridmst";
 import { FamilyMaker, FamilyPattern } from "./familymaker";
-import { ChildIdMaker, InterviewNoMaker, MailAdressMaker, UserIdMaker } from "./idmanagement";
+import { InterviewNoMaker, MailAdressMaker, UserIdMaker } from "./idmanagement";
 
 export class FamilyMakerType {
     pettern: FamilyPattern;
@@ -28,22 +29,17 @@ export class FamillesMakerParam {
 export class FamillesMaker {
     jyusyoMaster: JyusyoMaster;
     presonMaster: PersonMaster;
-    userIdMaker: UserIdMaker;
-    childIdMaker: ChildIdMaker;
+    userIdMaster: UserIdMaster
     interviewNoMaker: InterviewNoMaker;
-    mailAdressMaker: MailAdressMaker; 
     users: Array<Users>;
     childrens: Array<Children>;
     interviews: Array<Interviews>;
-    constructor(jyusyoMaster: JyusyoMaster, personMaster: PersonMaster
-        , userIdMaker: UserIdMaker, childIdMaker: ChildIdMaker
-        , interviewNoMaker: InterviewNoMaker,mailAdressMaker : MailAdressMaker) {
+    constructor(jyusyoMaster: JyusyoMaster, personMaster: PersonMaster, userIdMaster: UserIdMaster
+        , interviewNoMaker: InterviewNoMaker) {
         this.jyusyoMaster = jyusyoMaster;
         this.presonMaster = personMaster;
-        this.userIdMaker = userIdMaker;
-        this.childIdMaker = childIdMaker;
+        this.userIdMaster = userIdMaster;
         this.interviewNoMaker = interviewNoMaker;
-        this.mailAdressMaker = mailAdressMaker;
         this.users = [];
         this.childrens = [];
         this.interviews = [];
@@ -53,14 +49,14 @@ export class FamillesMaker {
         let index = 0;
         params.types.forEach(makerType => {
             for (let i = 0; i < makerType.count; i++) {
+                let userId = this.userIdMaster.getNewUserId();
                 const maker = new FamilyMaker(
                     ++index,
                     makerType.pettern,
-                    this.userIdMaker.createNewId(),
+                    userId.user_id,
                     params.facilityId,
-                    this.childIdMaker,
                     this.interviewNoMaker,
-                    this.mailAdressMaker.createNewId(),
+                    userId.mail,
                     this.jyusyoMaster,
                     this.presonMaster
                 );

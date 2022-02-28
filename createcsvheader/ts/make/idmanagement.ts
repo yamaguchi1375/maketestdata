@@ -1,8 +1,16 @@
+import { UserId } from "../dto/dtos";
+
+/* @deprecated */
 export class UserIdMaker {
-    createNewId(): string {
-        const { v4: uuidv4 } = require('uuid');
-        return uuidv4();
+    index: number;
+    userids: Array<UserId>;
+    constructor(userids: Array<UserId>) {
+        this.userids = userids;
+        this.index = 0;
     }
+    createNewUserId(): UserId {
+        return this.userids[this.index++];
+    } 
 }
 
 export class MailAdressMaker {
@@ -17,18 +25,6 @@ export class MailAdressMaker {
     createNewId(): string {
         return this.prefix + `+` + new String(this.startIndex++) + `@` + this.suffix;
     }
-}
-
-export class ChildIdMaker {
-    prefix: string;
-    startIndex: number;
-    constructor(prefix: string, startIndex: number) {
-        this.prefix = prefix;
-        this.startIndex = startIndex;
-    }
-    createNewId(): string {
-        return this.prefix + new String(this.startIndex++);
-    };
 }
 
 export class InterviewNoMaker {

@@ -58,14 +58,17 @@ var Relationship = {
     MUSUKO: "\u606F\u5B50",
     MUSUME: "\u5A18"
 };
-var Sex = {
-    MALE: "\u7537",
-    WOMAN: "\u5973"
+var Gender = {
+    MALE: "男",
+    WOMAN: "女"
 };
+function GenderValue(strValue) {
+    return strValue == Gender.MALE ? 1 : 2;
+}
 var PersonCsvMapping = {
     name: "\u540D\u524D",
     kana: "\u3075\u308A\u304C\u306A",
-    sex: "\u6027\u5225",
+    gender: "\u6027\u5225",
     age: "\u5E74\u9F62",
     birthday: "\u8A95\u751F\u65E5",
     bloodType: "\u8840\u6DB2\u578B",
@@ -85,11 +88,11 @@ var convertPersonMst = function (record, index) {
         firstKana: record[PersonCsvMapping.kana].replace(/[ぁ-ん]/g, function (s) {
             return String.fromCharCode(s.charCodeAt(0) + 0x60);
         }).split(" ")[1],
-        sex: record[PersonCsvMapping.sex],
+        gender: GenderValue(record[PersonCsvMapping.gender]),
         age: record[PersonCsvMapping.age],
         birthday: record[PersonCsvMapping.birthday],
-        bloodType: record[PersonCsvMapping.bloodType],
-        cellPhoneNumber: record[PersonCsvMapping.cellPhoneNumber],
+        bloodType: record[PersonCsvMapping.bloodType].replace('型', ''),
+        cellPhoneNumber: "080-3469-0696",
         relationship: Relationship.HONNIN,
         index: index
     };
@@ -133,12 +136,12 @@ var PersonMaster = /** @class */ (function () {
             firstName: family.firstName,
             lastKana: base.lastKana,
             firstKana: family.firstKana,
-            sex: family.sex,
+            gender: family.gender,
             age: family.age,
             birthday: family.birthday,
             bloodType: family.bloodType,
             cellPhoneNumber: family.cellPhoneNumber,
-            relationship: family.sex == Sex.MALE ? Relationship.CHICHI : Relationship.HAHA,
+            relationship: family.gender == GenderValue(Gender.MALE) ? Relationship.CHICHI : Relationship.HAHA,
             index: family.index
         };
     };
@@ -151,12 +154,12 @@ var PersonMaster = /** @class */ (function () {
             firstName: family.firstName,
             lastKana: base.lastKana,
             firstKana: family.firstKana,
-            sex: family.sex,
+            gender: family.gender,
             age: family.age,
             birthday: family.birthday,
             bloodType: family.bloodType,
             cellPhoneNumber: family.cellPhoneNumber,
-            relationship: family.sex == Sex.MALE ? Relationship.SOHU : Relationship.SOBO,
+            relationship: family.gender == GenderValue(Gender.MALE) ? Relationship.SOHU : Relationship.SOBO,
             index: family.index
         };
     };
@@ -169,12 +172,12 @@ var PersonMaster = /** @class */ (function () {
             firstName: family.firstName,
             lastKana: base.lastKana,
             firstKana: family.firstKana,
-            sex: family.sex,
+            gender: family.gender,
             age: family.age,
             birthday: family.birthday,
             bloodType: family.bloodType,
             cellPhoneNumber: family.cellPhoneNumber,
-            relationship: family.sex == Sex.MALE ? Relationship.MUSUKO : Relationship.MUSUME,
+            relationship: family.gender == GenderValue(Gender.MALE) ? Relationship.MUSUKO : Relationship.MUSUME,
             index: family.index
         };
     };
@@ -187,7 +190,7 @@ var PersonMaster = /** @class */ (function () {
             firstName: family.firstName,
             lastKana: base.lastKana,
             firstKana: family.firstKana,
-            sex: family.sex,
+            gender: family.gender,
             age: base.age,
             birthday: base.birthday,
             bloodType: family.bloodType,

@@ -27,7 +27,7 @@ export class JyusyoMaster {
     getRandomJyusyo() {
         // return this.jyusyos[Math.floor(Math.random() * (this.jyusyos.length - 1))];
         return {
-            yubin7: `2310005`,
+            yubin7: `231-0005`,
             jyusyo: `神奈川県横浜市中区本町`,
             jyusyo2: `６丁目５０−１０`,
             index: 1

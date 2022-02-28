@@ -1,0 +1,3 @@
+[
+{"reservation_no":"000000000001","facility_id":"001","user_id":"35fd4b45-c5f0-4eb9-a20b-86bca73b14ba","child_id":"01","usage_date":"2022-01-21","use_from_datetime":"2022-01-21 07:15:00","use_to_datetime":"2022-01-21 10:00:00","way_to_reserve":"1","accept_date":null,"status":"2","report_status":null,"usage_fee_per_day_upper3":null,"usage_fee_per_day_under3":null,"usage_fee_per_hour_upper3":null,"usage_fee_per_hour_under3":null,"extention_fee_per_hour_upper3":null,"extention_fee_per_hour_under3":null,"nightly_fee_per_hour_upper3":null,"nightly_fee_per_hour_under3":null,"lunch_fee":null,"snack_fee":null,"amount":null,"use_reason_category":null,"lunch_count":null,"snack_count":null,"create_user":null,"create_datetime":null,"update_user":null,"update_datetime":null}
+]
