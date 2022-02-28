@@ -73,10 +73,13 @@ var idmanagement_1 = require("./make/idmanagement");
 var familymaker_1 = require("./make/familymaker");
 var familiesmaker_1 = require("./make/familiesmaker");
 var entity_1 = require("./dto/entity");
+var useridmst_1 = require("./master/useridmst");
 // マスタ読み込みパス
 var JYUSYO_PATH = "/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/yubin_hama.csv";
 var OTONA_PATH = "/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/otona.csv";
 var KODOMO_PATH = "/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/kodomo.csv";
+var USERID_PATH = "/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/userid_mst_a10035.json";
+var EXPORT_SQL_PATH = '/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportsql/';
 // PARAM
 var PARAM_MAIL_PREFIX = "slk.ty.yamaguchi";
 var PARAM_MAIL_SUFFIX = "gmail.com";
@@ -88,17 +91,19 @@ var PARAM_INTERVIEW_NO_START_INDEX = 1;
 // const PARAM_FACILITY_ID = 'a0005';
 var PARAM_FACILITY_ID = 'a00021';
 // staging facilityId
-var STAGING_FACILITY_ID = 'a10033';
+var STAGING_FACILITY_ID = 'a10035';
 var STAGING_FACILITY_USER_ID = 'afb530ae-a1e7-477c-aab5-9a779603e2d6';
 var DATE_CRAETE_PRC_DATE = '2022-02-22 10:07:31.996';
 main();
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var jyusyoMaster, personMaster, userIdMaker, mailAdressMaker, interviewNoMaker, params, famillesMaker, familles, users, children, childrendetails, interviews, ObjectsToCsv, err_1;
+        var params, jyusyoMaster, personMaster, userIdMaster, interviewNoMaker, famillesMaker, familles, users_1, children_1, childrendetails_1, interviews_1, ObjectsToCsv_1, err_1;
+        var _this = this;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 3, , 4]);
+                    _a.trys.push([0, 4, , 5]);
+                    params = new familiesmaker_1.FamillesMakerParam(PARAM_FACILITY_ID);
                     jyusyoMaster = new jyusyomst_1.JyusyoMaster();
                     return [4 /*yield*/, jyusyoMaster.setup(JYUSYO_PATH)];
                 case 1:
@@ -107,58 +112,98 @@ function main() {
                     return [4 /*yield*/, personMaster.setup(OTONA_PATH, KODOMO_PATH)];
                 case 2:
                     _a.sent();
-                    userIdMaker = new idmanagement_1.UserIdMaker();
-                    mailAdressMaker = new idmanagement_1.MailAdressMaker(PARAM_MAIL_PREFIX, PARAM_MAIL_SUFFIX, PARAM_MAIL_STARTINDEX);
-                    interviewNoMaker = new idmanagement_1.InterviewNoMaker(PARAM_INTERVIEW_NO_START_INDEX);
-                    params = new familiesmaker_1.FamillesMakerParam(PARAM_FACILITY_ID);
-                    // test
-                    // params.pushPettern(new FamilyMakerType(FamilyPattern.Children1, 1));
-                    params.pushPettern(new familiesmaker_1.FamilyMakerType(familymaker_1.FamilyPattern.Children2, 1));
-                    famillesMaker = new familiesmaker_1.FamillesMaker(jyusyoMaster, personMaster, userIdMaker, interviewNoMaker, mailAdressMaker);
-                    familles = famillesMaker.make(params);
-                    users = convertUsers(familles);
-                    children = convertChildren(familles);
-                    childrendetails = convertChildrenDetail(familles);
-                    interviews = convertInterviews(familles);
-                    ObjectsToCsv = require('objects-to-csv');
-                    // (async () => {
-                    //   const csv = new ObjectsToCsv(users);    
-                    //   // Save to file:
-                    //   await csv.toDisk('/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportcsv/users.csv');
-                    //   // Return the CSV file as string:
-                    //   console.log(await csv.toString());
-                    // })();
-                    // (async () => {
-                    //   const csv = new ObjectsToCsv(children);    
-                    //   // Save to file:
-                    //   await csv.toDisk('/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportcsv/children.csv');
-                    //   // Return the CSV file as string:
-                    //   console.log(await csv.toString());
-                    // })();
-                    // (async () => {
-                    //   const csv = new ObjectsToCsv(childrendetails);    
-                    //   // Save to file:
-                    //   await csv.toDisk('/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportcsv/childrendetails.csv');
-                    //   // Return the CSV file as string:
-                    //   console.log(await csv.toString());
-                    // })();
-                    // (async () => {
-                    //   const csv = new ObjectsToCsv(interviews);    
-                    //   // Save to file:
-                    //   await csv.toDisk('/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportcsv/interviews.csv');
-                    //   // Return the CSV file as string:
-                    //   console.log(await csv.toString());
-                    // })();
-                    exportSqlInterviews("users", users);
-                    exportSqlInterviews("children", children);
-                    exportSqlInterviews("children_detail", childrendetails);
-                    exportSqlInterviews("interviews", interviews);
-                    return [3 /*break*/, 4];
+                    userIdMaster = new useridmst_1.UserIdMaster(44);
+                    return [4 /*yield*/, userIdMaster.setup(USERID_PATH)];
                 case 3:
+                    _a.sent();
+                    interviewNoMaker = new idmanagement_1.InterviewNoMaker(PARAM_INTERVIEW_NO_START_INDEX);
+                    // test
+                    params.pushPettern(new familiesmaker_1.FamilyMakerType(familymaker_1.FamilyPattern.Children1, 1));
+                    params.pushPettern(new familiesmaker_1.FamilyMakerType(familymaker_1.FamilyPattern.Children2, 1));
+                    params.pushPettern(new familiesmaker_1.FamilyMakerType(familymaker_1.FamilyPattern.Futago3, 1));
+                    famillesMaker = new familiesmaker_1.FamillesMaker(jyusyoMaster, personMaster, userIdMaster, interviewNoMaker);
+                    familles = famillesMaker.make(params);
+                    users_1 = convertUsers(familles);
+                    children_1 = convertChildren(familles);
+                    childrendetails_1 = convertChildrenDetail(familles);
+                    interviews_1 = convertInterviews(familles);
+                    ObjectsToCsv_1 = require('objects-to-csv');
+                    (function () { return __awaiter(_this, void 0, void 0, function () {
+                        var csv;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    csv = new ObjectsToCsv_1(users_1);
+                                    // Save to file:
+                                    return [4 /*yield*/, csv.toDisk('/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportcsv/users.csv')];
+                                case 1:
+                                    // Save to file:
+                                    _a.sent();
+                                    return [2 /*return*/];
+                            }
+                        });
+                    }); })();
+                    (function () { return __awaiter(_this, void 0, void 0, function () {
+                        var csv;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    csv = new ObjectsToCsv_1(children_1);
+                                    // Save to file:
+                                    return [4 /*yield*/, csv.toDisk('/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportcsv/children.csv')];
+                                case 1:
+                                    // Save to file:
+                                    _a.sent();
+                                    return [2 /*return*/];
+                            }
+                        });
+                    }); })();
+                    (function () { return __awaiter(_this, void 0, void 0, function () {
+                        var csv;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    csv = new ObjectsToCsv_1(childrendetails_1);
+                                    // Save to file:
+                                    return [4 /*yield*/, csv.toDisk('/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportcsv/childrendetails.csv')];
+                                case 1:
+                                    // Save to file:
+                                    _a.sent();
+                                    return [2 /*return*/];
+                            }
+                        });
+                    }); })();
+                    (function () { return __awaiter(_this, void 0, void 0, function () {
+                        var csv, _a, _b;
+                        return __generator(this, function (_c) {
+                            switch (_c.label) {
+                                case 0:
+                                    csv = new ObjectsToCsv_1(interviews_1);
+                                    // Save to file:
+                                    return [4 /*yield*/, csv.toDisk('/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportcsv/interviews.csv')];
+                                case 1:
+                                    // Save to file:
+                                    _c.sent();
+                                    // Return the CSV file as string:
+                                    _b = (_a = console).log;
+                                    return [4 /*yield*/, csv.toString()];
+                                case 2:
+                                    // Return the CSV file as string:
+                                    _b.apply(_a, [_c.sent()]);
+                                    return [2 /*return*/];
+                            }
+                        });
+                    }); })();
+                    exportSqlEntity("users", users_1);
+                    exportSqlEntity("children", children_1);
+                    exportSqlEntity("children_detail", childrendetails_1);
+                    exportSqlEntity("interviews", interviews_1);
+                    return [3 /*break*/, 5];
+                case 4:
                     err_1 = _a.sent();
                     console.log(err_1);
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 5: return [2 /*return*/];
             }
         });
     });
@@ -333,40 +378,56 @@ function camelToUnderscore(key) {
     var result = key.replace(/([A-Z])/g, " $1");
     return result.split(' ').join('_').toLowerCase();
 }
-function exportSqlInterviews(tablename, records) {
-    records.forEach(function (record) {
-        console.log("");
-        var index = 0;
-        var sqlcol = 'INSERT INTO `' + tablename + '` (';
-        Object.keys(record)
-            .forEach(function (key) {
-            index += 1;
-            if (tablename == 'interviews' && index == 1) {
-                return;
-            }
-            sqlcol += '`' + camelToUnderscore(key) + '` ,';
+function exportSqlEntity(tablename, records) {
+    // 同期で行う場合
+    try {
+        var filePath_1 = EXPORT_SQL_PATH + tablename + '_ins.sql';
+        if (fs.existsSync(filePath_1)) {
+            var now = Date.now();
+            var backupfilepath = EXPORT_SQL_PATH + '/backup/' + tablename + '_ins.' + now + '.js';
+            fs.renameSync(filePath_1, backupfilepath);
+        }
+        records.forEach(function (record) {
+            console.log("");
+            var index = 0;
+            var sqlcol = 'INSERT INTO `' + tablename + '` (';
+            Object.keys(record)
+                .forEach(function (key) {
+                index += 1;
+                if (tablename == 'interviews' && index == 1) {
+                    return;
+                }
+                sqlcol += '`' + camelToUnderscore(key) + '` ,';
+            });
+            sqlcol = sqlcol.slice(0, -1);
+            sqlcol += ' ) VALUES ';
+            fs.appendFileSync(filePath_1, sqlcol);
+            fs.appendFileSync(filePath_1, '\r\n');
+            console.log(sqlcol);
+            var sqlValue = '(';
+            index = 0;
+            Object.values(record)
+                .forEach(function (value) {
+                index += 1;
+                if (tablename == 'interviews' && index == 1) {
+                    return;
+                }
+                if ("NULL" == value) {
+                    sqlValue += value;
+                }
+                else {
+                    sqlValue += "'" + value + "'";
+                }
+                sqlValue += ' ,';
+            });
+            sqlValue = sqlValue.slice(0, -1);
+            sqlValue += '); ';
+            fs.appendFileSync(filePath_1, sqlValue);
+            fs.appendFileSync(filePath_1, '\r\n');
+            console.log(sqlValue);
         });
-        sqlcol = sqlcol.slice(0, -1);
-        sqlcol += ' ) VALUES ';
-        console.log(sqlcol);
-        var sqlValue = '(';
-        index = 0;
-        Object.values(record)
-            .forEach(function (value) {
-            index += 1;
-            if (tablename == 'interviews' && index == 1) {
-                return;
-            }
-            if ("NULL" == value) {
-                sqlValue += value;
-            }
-            else {
-                sqlValue += "'" + value + "'";
-            }
-            sqlValue += ' ,';
-        });
-        sqlValue = sqlValue.slice(0, -1);
-        sqlValue += ');';
-        console.log(sqlValue);
-    });
+    }
+    catch (e) {
+        console.log(e);
+    }
 }

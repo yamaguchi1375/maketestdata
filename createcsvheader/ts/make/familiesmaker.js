@@ -24,12 +24,11 @@ var FamillesMakerParam = /** @class */ (function () {
 exports.FamillesMakerParam = FamillesMakerParam;
 ;
 var FamillesMaker = /** @class */ (function () {
-    function FamillesMaker(jyusyoMaster, personMaster, userIdMaker, interviewNoMaker, mailAdressMaker) {
+    function FamillesMaker(jyusyoMaster, personMaster, userIdMaster, interviewNoMaker) {
         this.jyusyoMaster = jyusyoMaster;
         this.presonMaster = personMaster;
-        this.userIdMaker = userIdMaker;
+        this.userIdMaster = userIdMaster;
         this.interviewNoMaker = interviewNoMaker;
-        this.mailAdressMaker = mailAdressMaker;
         this.users = [];
         this.childrens = [];
         this.interviews = [];
@@ -41,7 +40,8 @@ var FamillesMaker = /** @class */ (function () {
         var index = 0;
         params.types.forEach(function (makerType) {
             for (var i = 0; i < makerType.count; i++) {
-                var maker = new familymaker_1.FamilyMaker(++index, makerType.pettern, _this.userIdMaker.createNewId(), params.facilityId, _this.interviewNoMaker, _this.mailAdressMaker.createNewId(), _this.jyusyoMaster, _this.presonMaster);
+                var userId = _this.userIdMaster.getNewUserId();
+                var maker = new familymaker_1.FamilyMaker(++index, makerType.pettern, userId.user_id, params.facilityId, _this.interviewNoMaker, userId.mail, _this.jyusyoMaster, _this.presonMaster);
                 familles.push(maker.make());
             }
         });

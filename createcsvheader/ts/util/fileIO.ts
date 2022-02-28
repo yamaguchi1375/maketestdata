@@ -6,7 +6,7 @@ export type Converter<T> = (
     index: number
  ) => T;
 
-export const readCsv =async<T> (
+export const readCsv = async<T> (
     filePath: string,
     converter: Converter<T>
     ): Promise<Array<T>> => {
@@ -23,4 +23,11 @@ export const readCsv =async<T> (
         });
     });
 };
+
+export const readJson = async<T> (filePath: string): Promise<Array<T>> =>
+    new Promise((resolve, reject) => {
+        fs.readFile(filePath, 'utf-8', (err, data) => 
+            err ? reject(err) : resolve(JSON.parse(data))
+        );
+    });
 

@@ -1,8 +1,16 @@
+import { UserId } from "../dto/dtos";
+
+/* @deprecated */
 export class UserIdMaker {
-    createNewId(): string {
-        const { v4: uuidv4 } = require('uuid');
-        return uuidv4();
+    index: number;
+    userids: Array<UserId>;
+    constructor(userids: Array<UserId>) {
+        this.userids = userids;
+        this.index = 0;
     }
+    createNewUserId(): UserId {
+        return this.userids[this.index++];
+    } 
 }
 
 export class MailAdressMaker {

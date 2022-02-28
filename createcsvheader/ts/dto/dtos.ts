@@ -50,8 +50,8 @@ export interface Family {
     interviews: Array<Interviews>;
 };
 
-export interface CalendarMst {
-    month: number,
-    date: string,
-    holiday: number
+export interface UserId {
+    mail: string,
+    user_id: string,
+    facility_id: string
 }

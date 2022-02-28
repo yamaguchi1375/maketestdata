@@ -2,7 +2,7 @@ import * as fs from 'fs';
 
 export class JsonToSource {
     static makeInterfaceSourc(tableName: string, json: object) {
-        console.log(`readJsonInterview ` + snakeCaseToClassName(tableName) + ` {`);
+        console.log(`export interface ` + snakeCaseToClassName(tableName) + ` {`);
         for (const [key, value] of Object.entries(json)) {
             console.log(`  `   + snakeCaseToCamelCase(key) + `: ` +  typestr(value) + `;`);
         }
@@ -12,10 +12,12 @@ export class JsonToSource {
       return new Promise((resolve, reject) => {
         let csvToJson = require('convert-csv-to-json');
         let json = csvToJson.x(',').formatValueByType().getJsonFromCsv(path);
+        json.forEach(function(row: any) {
+          row['aaa'] = 'bbb';
+        });
       });
     }
 }
-
 
 function typestr(value: any) : string {
     if (isNaN(value)) {

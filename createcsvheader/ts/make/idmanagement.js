@@ -1,12 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.InterviewNoMaker = exports.MailAdressMaker = exports.UserIdMaker = void 0;
+/* @deprecated */
 var UserIdMaker = /** @class */ (function () {
-    function UserIdMaker() {
+    function UserIdMaker(userids) {
+        this.userids = userids;
+        this.index = 0;
     }
-    UserIdMaker.prototype.createNewId = function () {
-        var uuidv4 = require('uuid').v4;
-        return uuidv4();
+    UserIdMaker.prototype.createNewUserId = function () {
+        return this.userids[this.index++];
     };
     return UserIdMaker;
 }());
