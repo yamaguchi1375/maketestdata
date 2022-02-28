@@ -10,6 +10,7 @@ import { Children, Family, Interviews } from './dto/dtos';
 import { JsonToSource } from './util/jsonToSource';
 import { ChildrenDetailEntity, ChildrenEntity, Entity, EntityConverter, InterviewsEntity, UsersEntity } from './dto/entity';
 import { UserIdMaster } from './master/useridmst';
+import { exportCSV } from './util/fileIO';
 
 // マスタ読み込みパス
 const JYUSYO_PATH = `/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/yubin_hama.csv`;
@@ -18,11 +19,12 @@ const KODOMO_PATH = `/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/kod
 const USERID_PATH = `/Users/yamaguchitakeshi/slk/gitwork/maketestdata/master/userid_mst_a10035.json`;
 
 const EXPORT_SQL_PATH = '/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportsql/';
+const EXPORT_CSV_PATH = '/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportcsv/';
 
 // PARAM
 const PARAM_MAIL_PREFIX = `slk.ty.yamaguchi`;
 const PARAM_MAIL_SUFFIX = `gmail.com`;
-const PARAM_MAIL_STARTINDEX = 103;
+const PARAM_MAIL_STARTINDEX = 101;
 const PARAM_CHILDREN_ID_PREFIX = `shibata`;
 const PARAM_CHILDREN_ID_START_INDEX = 1;
 
@@ -34,10 +36,14 @@ const PARAM_FACILITY_ID = 'a00021';
 
 // staging facilityId
 const STAGING_FACILITY_ID = 'a10035';
-const STAGING_FACILITY_USER_ID = 'afb530ae-a1e7-477c-aab5-9a779603e2d6';
-const DATE_CRAETE_PRC_DATE = '2022-02-22 10:07:31.996';
 
 main();
+
+//-------------------------------------------------------------------
+// やること
+// 1. userid_mst_a10035.json みたいなデータをWebのツールで csv -> json して配置
+// 2. STAGING_FACILITY_ID を設定
+// 3. 
 
 async function main() {
   try {
@@ -57,16 +63,21 @@ async function main() {
     // const family = familyMaker.make();
 
     // const params = new FamillesMakerParam(STAGING_FACILITY_ID);
-    const params = new FamillesMakerParam(PARAM_FACILITY_ID);
+    const params = new FamillesMakerParam(STAGING_FACILITY_ID);
     
     // main
-    // params.pushPettern(new FamilyMakerType(FamilyPattern.Children1, 9));
-    // params.pushPettern(new FamilyMakerType(FamilyPattern.Children2, 6));
-    // params.pushPettern(new FamilyMakerType(FamilyPattern.Children3, 4));
-    // params.pushPettern(new FamilyMakerType(FamilyPattern.Futago2, 2));
+    params.pushPettern(new FamilyMakerType(FamilyPattern.Children1, 10));
+    params.pushPettern(new FamilyMakerType(FamilyPattern.Children2, 6));
+    params.pushPettern(new FamilyMakerType(FamilyPattern.Children3, 4));
+    params.pushPettern(new FamilyMakerType(FamilyPattern.Futago2, 2));
+    params.pushPettern(new FamilyMakerType(FamilyPattern.Futago3, 1));
+    params.pushPettern(new FamilyMakerType(FamilyPattern.Mitsugo3, 1));
+    params.pushPettern(new FamilyMakerType(FamilyPattern.Mitsugo4, 1));
+
+    // test
+    // params.pushPettern(new FamilyMakerType(FamilyPattern.Children1, 1));
+    // params.pushPettern(new FamilyMakerType(FamilyPattern.Children2, 1));
     // params.pushPettern(new FamilyMakerType(FamilyPattern.Futago3, 1));
-    // params.pushPettern(new FamilyMakerType(FamilyPattern.Mitsugo3, 1));
-    // params.pushPettern(new FamilyMakerType(FamilyPattern.Mitsugo4, 1));
 
     /* ここから作成ロジック */
     const jyusyoMaster = new JyusyoMaster();
@@ -77,11 +88,6 @@ async function main() {
     await userIdMaster.setup(USERID_PATH);
 
     const interviewNoMaker = new InterviewNoMaker(PARAM_INTERVIEW_NO_START_INDEX);
-
-    // test
-    params.pushPettern(new FamilyMakerType(FamilyPattern.Children1, 1));
-    params.pushPettern(new FamilyMakerType(FamilyPattern.Children2, 1));
-    params.pushPettern(new FamilyMakerType(FamilyPattern.Futago3, 1));
 
     const famillesMaker = new FamillesMaker(
       jyusyoMaster,
@@ -99,45 +105,16 @@ async function main() {
 
     const ObjectsToCsv = require('objects-to-csv');
 
-    (async () => {
-      const csv = new ObjectsToCsv(users);    
-      // Save to file:
-      await csv.toDisk('/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportcsv/users.csv');
-      // Return the CSV file as string:
-      // console.log(await csv.toString());
-    })();
-    
-    (async () => {
-      const csv = new ObjectsToCsv(children);    
-      // Save to file:
-      await csv.toDisk('/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportcsv/children.csv');
-      // Return the CSV file as string:
-      // console.log(await csv.toString());
-    })();
-
-    (async () => {
-      const csv = new ObjectsToCsv(childrendetails);    
-      // Save to file:
-      await csv.toDisk('/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportcsv/childrendetails.csv');
-      // Return the CSV file as string:
-      // console.log(await csv.toString());
-    })();
-
-    (async () => {
-      const csv = new ObjectsToCsv(interviews);    
-      // Save to file:
-      await csv.toDisk('/Users/yamaguchitakeshi/slk/gitwork/maketestdata/exportcsv/interviews.csv');
-      // Return the CSV file as string:
-      console.log(await csv.toString());
-    })();
+    await exportCSV(EXPORT_CSV_PATH, 'users', users);
+    await exportCSV(EXPORT_CSV_PATH, 'children', children);
+    await exportCSV(EXPORT_CSV_PATH, 'childrendetails', childrendetails);
+    await exportCSV(EXPORT_CSV_PATH, 'interviews', interviews);
 
     exportSqlEntity(`users`, users);
     exportSqlEntity(`children`, children);
     exportSqlEntity(`children_detail`, childrendetails);
     exportSqlEntity(`interviews`, interviews);
 
-  // const { v4: uuidv4 } = require('uuid');
-  // console.log(uuidv4());
 
   let csvToJson = require('convert-csv-to-json');
   let json = csvToJson.fieldDelimiter(',').formatValueByType().getJsonFromCsv("/Users/yamaguchitakeshi/slk/gitwork/maketestdata/example/children_detail.csv");
