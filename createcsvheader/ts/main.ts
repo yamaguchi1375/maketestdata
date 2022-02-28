@@ -6,10 +6,9 @@ import { PersonMaster } from './master/psersonmst';
 import { UserIdMaker, InterviewNoMaker, MailAdressMaker } from './make/idmanagement';
 import { FamilyPattern} from './make/familymaker'
 import { FamillesMaker, FamillesMakerParam, FamilyMakerType } from './make/familiesmaker';
-import { Children, Family, Interviews, Users } from './dto/dtos';
+import { Children, Family, Interviews } from './dto/dtos';
 import { JsonToSource } from './util/jsonToSource';
 import { ChildrenDetailEntity, ChildrenEntity, Entity, EntityConverter, InterviewsEntity, UsersEntity } from './dto/entity';
-import { DateUtil } from './util/datetimeutil';
 import { UserIdMaster } from './master/useridmst';
 
 // マスタ読み込みパス
@@ -140,13 +139,13 @@ async function main() {
   // const { v4: uuidv4 } = require('uuid');
   // console.log(uuidv4());
 
-  // let csvToJson = require('convert-csv-to-json');
-  // let json = csvToJson.fieldDelimiter(',').formatValueByType().getJsonFromCsv("/Users/yamaguchitakeshi/slk/gitwork/maketestdata/example/children_detail.csv");
-  // for(let i=0; i<json.length;i++){
-  //   console.log(json[i]);
-  //   jsonToBasicObj(json[i]);
-  //   // JsonToSource.makeInterfaceSourc('children_detail', json[i]);
-  // }
+  let csvToJson = require('convert-csv-to-json');
+  let json = csvToJson.fieldDelimiter(',').formatValueByType().getJsonFromCsv("/Users/yamaguchitakeshi/slk/gitwork/maketestdata/example/children_detail.csv");
+  for(let i=0; i<json.length;i++){
+    console.log(json[i]);
+    jsonToBasicObj(json[i]);
+    JsonToSource.makeInterfaceSourc('children_detail', json[i]);
+  }
 
 } catch (err) {
     console.log(err);
