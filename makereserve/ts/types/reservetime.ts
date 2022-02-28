@@ -89,17 +89,17 @@ export const get1DayCount = (date: string): number => {
 
 export const getReserveStatus = (date: string): ReserveStatus => {
     let baseDate = new Date(date);
-    let random = Math.floor(Math.random() * (4-1));
+    let random = Math.floor(Math.random() * (4));
     if (TODAY.getTime() > baseDate.getTime()) {
         // 過去分
         return ReserveStatus.Used;
     } else if (FEWER_ZONES.getTime() > baseDate.getTime()) {
         // 割と近い未来
-        return random < 4 ? ReserveStatus.Approved : 
+        return random < 3 ? ReserveStatus.Approved : 
         ReserveStatus.Request;
     } else {
         // ちょっと遠い未来
-        return random < 2 ? ReserveStatus.Approved : 
+        return random < 1 ? ReserveStatus.Approved : 
         ReserveStatus.Request;
     }
 }

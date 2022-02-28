@@ -81,19 +81,19 @@ var get1DayCount = function (date) {
 exports.get1DayCount = get1DayCount;
 var getReserveStatus = function (date) {
     var baseDate = new Date(date);
-    var random = Math.floor(Math.random() * (4 - 1));
+    var random = Math.floor(Math.random() * (4));
     if (TODAY.getTime() > baseDate.getTime()) {
         // 過去分
         return ReserveStatus.Used;
     }
     else if (FEWER_ZONES.getTime() > baseDate.getTime()) {
         // 割と近い未来
-        return random < 4 ? ReserveStatus.Approved :
+        return random < 3 ? ReserveStatus.Approved :
             ReserveStatus.Request;
     }
     else {
         // ちょっと遠い未来
-        return random < 2 ? ReserveStatus.Approved :
+        return random < 1 ? ReserveStatus.Approved :
             ReserveStatus.Request;
     }
 };
